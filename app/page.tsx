@@ -136,92 +136,106 @@ export default function MonarchHomePage() {
       {/* Ruler Tick Strip */}
       <div className="ruler-ticks border-b border-neutral-200 dark:border-neutral-800" />
 
-      {/* 3-Column Structural Bento Grid */}
+      {/* Full-Width Three.js Spatial Coverflow Stage */}
+      <section className="relative border-b border-neutral-200 p-6 dark:border-neutral-800">
+        <span className="pointer-events-none absolute -bottom-[6px] -left-[5px] font-mono text-[11px] text-neutral-400">+</span>
+        <span className="pointer-events-none absolute -bottom-[6px] -right-[5px] font-mono text-[11px] text-neutral-400">+</span>
+
+        <div className="mb-3 flex items-center justify-between">
+          <span className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
+            02 // THREE.JS_SPATIAL_STAGE · {active.id.toUpperCase()}
+          </span>
+          <span className="font-mono text-[11px] text-neutral-500">
+            {String(activeIdx + 1).padStart(2, '0')} / {String(MONARCH_COMPONENTS.length).padStart(2, '0')}
+          </span>
+        </div>
+
+        <ThreeCoverflowStage
+          components={MONARCH_COMPONENTS}
+          activeIndex={activeIdx}
+          darkMode={darkMode}
+          onSelectIndex={setActiveIdx}
+        />
+
+        <div className="mt-3 flex items-center justify-between">
+          <div className="flex gap-2">
+            <button
+              onClick={() => stepDeck(-1)}
+              className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+            >
+              <kbd className="font-mono text-[10px] text-neutral-500">←</kbd> Prev
+            </button>
+            <button
+              onClick={() => stepDeck(1)}
+              className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+            >
+              Next <kbd className="font-mono text-[10px] text-neutral-500">→</kbd>
+            </button>
+          </div>
+          <span className="font-mono text-[11px] text-neutral-500">CLICK SLAB OR PRESS ARROWS</span>
+        </div>
+      </section>
+
+      {/* 3-Column Telemetry & Interactive Controls Row */}
       <section className="relative grid grid-cols-1 divide-y divide-neutral-200 border-b border-neutral-200 md:grid-cols-3 md:divide-x md:divide-y-0 dark:divide-neutral-800 dark:border-neutral-800">
         <span className="pointer-events-none absolute -bottom-[6px] -left-[5px] font-mono text-[11px] text-neutral-400">+</span>
         <span className="pointer-events-none absolute -bottom-[6px] -right-[5px] font-mono text-[11px] text-neutral-400">+</span>
 
-        {/* Three.js Coverflow Stage */}
-        <div className="p-6 md:col-span-2">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
-              02 // THREE.JS_SPATIAL_STAGE · {active.id.toUpperCase()}
-            </span>
-            <span className="font-mono text-[11px] text-neutral-500">
-              {String(activeIdx + 1).padStart(2, '0')} / {String(MONARCH_COMPONENTS.length).padStart(2, '0')}
-            </span>
-          </div>
-
-          <ThreeCoverflowStage
-            components={MONARCH_COMPONENTS}
-            activeIndex={activeIdx}
-            darkMode={darkMode}
-            onSelectIndex={setActiveIdx}
-          />
-
-          <div className="mt-3 flex items-center justify-between">
-            <div className="flex gap-2">
-              <button
-                onClick={() => stepDeck(-1)}
-                className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
-              >
-                <kbd className="font-mono text-[10px] text-neutral-500">←</kbd> Prev
-              </button>
-              <button
-                onClick={() => stepDeck(1)}
-                className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
-              >
-                Next <kbd className="font-mono text-[10px] text-neutral-500">→</kbd>
-              </button>
+        <div className="p-6">
+          <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">03 // TELEMETRY</div>
+          <div className="mt-3 grid grid-cols-2 divide-x divide-y divide-neutral-200 border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
+            <div className="p-3">
+              <div className="font-mono text-[10px] text-neutral-500 uppercase">PRIMITIVES</div>
+              <div className="mt-1 font-mono text-xl font-semibold">12</div>
             </div>
-            <span className="font-mono text-[11px] text-neutral-500">CLICK SLAB OR PRESS ARROWS</span>
+            <div className="p-3">
+              <div className="font-mono text-[10px] text-neutral-500 uppercase">ENGINE</div>
+              <div className="mt-1 font-mono text-xl font-semibold">3D</div>
+            </div>
+            <div className="p-3">
+              <div className="font-mono text-[10px] text-neutral-500 uppercase">RUNTIME DEPS</div>
+              <div className="mt-1 font-mono text-xl font-semibold">0</div>
+            </div>
+            <div className="p-3">
+              <div className="font-mono text-[10px] text-neutral-500 uppercase">SHADOWS</div>
+              <div className="mt-1 font-mono text-xl font-semibold">0px</div>
+            </div>
           </div>
         </div>
 
-        {/* Right Telemetry + Split Slider Column */}
-        <div className="flex flex-col justify-between divide-y divide-dashed divide-neutral-200 dark:divide-neutral-800">
-          <div className="p-6">
-            <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">03 // TELEMETRY</div>
-            <div className="mt-3 grid grid-cols-2 divide-x divide-y divide-neutral-200 border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
-              <div className="p-3">
-                <div className="font-mono text-[10px] text-neutral-500 uppercase">PRIMITIVES</div>
-                <div className="mt-1 font-mono text-xl font-semibold">12</div>
-              </div>
-              <div className="p-3">
-                <div className="font-mono text-[10px] text-neutral-500 uppercase">ENGINE</div>
-                <div className="mt-1 font-mono text-xl font-semibold">3D</div>
-              </div>
-              <div className="p-3">
-                <div className="font-mono text-[10px] text-neutral-500 uppercase">RUNTIME DEPS</div>
-                <div className="mt-1 font-mono text-xl font-semibold">0</div>
-              </div>
-              <div className="p-3">
-                <div className="font-mono text-[10px] text-neutral-500 uppercase">SHADOWS</div>
-                <div className="mt-1 font-mono text-xl font-semibold">0px</div>
-              </div>
+        <div className="p-6">
+          <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">04 // SPLIT_COMPARE</div>
+          <div className="relative mt-3 flex h-24 select-none items-center justify-end border border-neutral-200 bg-white px-4 font-mono text-xs dark:border-neutral-800 dark:bg-[#111113]">
+            <span>MONARCH</span>
+            <div
+              style={{ width: `${splitPos}%` }}
+              className="absolute inset-y-0 left-0 flex items-center overflow-hidden border-r border-neutral-900 bg-neutral-100 pl-4 text-neutral-500 dark:border-white dark:bg-neutral-800/70"
+            >
+              RAW
             </div>
+            <input
+              type="range"
+              min={10}
+              max={90}
+              value={splitPos}
+              onChange={(e) => setSplitPos(Number(e.target.value))}
+              className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+            />
           </div>
+        </div>
 
-          <div className="p-6">
-            <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">04 // SPLIT_COMPARE</div>
-            <div className="relative mt-3 flex h-12 select-none items-center justify-end border border-neutral-200 bg-white px-3 font-mono text-[11px] dark:border-neutral-800 dark:bg-[#111113]">
-              <span>MONARCH</span>
-              <div
-                style={{ width: `${splitPos}%` }}
-                className="absolute inset-y-0 left-0 flex items-center overflow-hidden border-r border-neutral-900 bg-neutral-100 pl-3 text-neutral-500 dark:border-white dark:bg-neutral-800/70"
-              >
-                RAW
-              </div>
-              <input
-                type="range"
-                min={10}
-                max={90}
-                value={splitPos}
-                onChange={(e) => setSplitPos(Number(e.target.value))}
-                className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
-              />
-            </div>
+        <div className="flex flex-col justify-between p-6">
+          <div>
+            <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">05 // ACTIVE_SPEC</div>
+            <div className="mt-3 text-base font-semibold tracking-tight">{active.name}</div>
+            <div className="mt-1 font-mono text-xs text-neutral-500">{active.filename}</div>
           </div>
+          <button
+            onClick={() => document.getElementById('registry')?.scrollIntoView({ behavior: 'smooth' })}
+            className="mt-4 w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs font-medium hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+          >
+            Inspect Source &amp; Props ↓
+          </button>
         </div>
       </section>
 

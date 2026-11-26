@@ -291,12 +291,12 @@ export function ThreeCoverflowStage({
     const container = mountRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || 640;
-    const height = container.clientHeight || 260;
+    const width = container.clientWidth || 1080;
+    const height = container.clientHeight || 460;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-    camera.position.set(0, 0.25, 6.0);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+    camera.position.set(0, 0.12, 4.4);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -305,8 +305,8 @@ export function ThreeCoverflowStage({
     container.appendChild(renderer.domElement);
 
     const gridColor = darkMode ? 0x27272a : 0xd4d4d8;
-    const grid = new THREE.GridHelper(20, 26, gridColor, gridColor);
-    grid.position.y = -1.25;
+    const grid = new THREE.GridHelper(24, 30, gridColor, gridColor);
+    grid.position.y = -1.35;
     scene.add(grid);
 
     const slabs: {
@@ -316,7 +316,7 @@ export function ThreeCoverflowStage({
       texture: THREE.CanvasTexture;
     }[] = [];
 
-    const planeGeo = new THREE.BoxGeometry(2.1, 1.44, 0.04);
+    const planeGeo = new THREE.BoxGeometry(2.55, 1.75, 0.05);
     const edgesGeo = new THREE.EdgesGeometry(planeGeo);
 
     components.forEach((comp, i) => {
@@ -372,8 +372,8 @@ export function ThreeCoverflowStage({
 
     const resizeObserver = new ResizeObserver(() => {
       if (!container) return;
-      const w = container.clientWidth || 640;
-      const h = container.clientHeight || 260;
+      const w = container.clientWidth || 1080;
+      const h = container.clientHeight || 460;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -388,11 +388,11 @@ export function ThreeCoverflowStage({
       slabs.forEach((s, i) => {
         const offset = i - curr;
         const abs = Math.abs(offset);
-        const targetX = offset * 1.82;
-        const targetZ = offset === 0 ? 0.95 : -abs * 0.65;
-        const targetRotY = offset === 0 ? pointerX * 0.35 : Math.sign(offset) * -0.45;
-        const targetRotX = offset === 0 ? -pointerY * 0.25 : 0;
-        const targetScale = offset === 0 ? 1.12 : Math.max(0.65, 0.88 - abs * 0.08);
+        const targetX = offset * 2.25;
+        const targetZ = offset === 0 ? 0.9 : -abs * 0.7;
+        const targetRotY = offset === 0 ? pointerX * 0.3 : Math.sign(offset) * -0.45;
+        const targetRotX = offset === 0 ? -pointerY * 0.2 : 0;
+        const targetScale = offset === 0 ? 1.18 : Math.max(0.66, 0.88 - abs * 0.08);
 
         s.group.position.x += (targetX - s.group.position.x) * 0.14;
         s.group.position.z += (targetZ - s.group.position.z) * 0.14;
@@ -440,7 +440,7 @@ export function ThreeCoverflowStage({
   return (
     <div
       ref={mountRef}
-      className="h-[260px] w-full cursor-grab active:cursor-grabbing border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/40"
+      className="h-[440px] md:h-[500px] w-full cursor-grab active:cursor-grabbing border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/40"
     />
   );
 }
