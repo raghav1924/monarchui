@@ -17,7 +17,28 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'RenderJet (RJ) — Spatial UI Primitives for React',
   description:
-    'Fluid, physical motion with zero layout shifts. Built for the modern web with Three.js and Tailwind CSS.'
+    'Fluid, physical motion with zero layout shifts. Built for the modern web with Three.js and Tailwind CSS.',
+  openGraph: {
+    title: 'RenderJet (RJ) — Spatial UI Primitives for React',
+    description:
+      'Fluid, physical motion with zero layout shifts. Built for the modern web with Three.js and Tailwind CSS.',
+    images: [
+      {
+        url: '/og-thumbnail.jpg',
+        width: 1200,
+        height: 675,
+        alt: 'RenderJet — Three.js Spatial Stage & Live Interactive Component Preview'
+      }
+    ],
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'RenderJet (RJ) — Spatial UI Primitives for React',
+    description:
+      'Fluid, physical motion with zero layout shifts. Built for the modern web with Three.js and Tailwind CSS.',
+    images: ['/og-thumbnail.jpg']
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

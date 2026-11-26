@@ -1,7 +1,9 @@
-# MonarchUI 👑
+# RenderJet (RJ)
 
-> **Interfaces Crafted Like Luxury Hardware.**  
-> **Royal-Grade Spatial, Bento & Glassmorphic UI Component Registry, Interactive Studio & CLI Installer for React, Next.js, Tailwind CSS & Vanilla HTML/CSS.**
+![RenderJet — Spatial UI Primitives](./public/og-thumbnail.jpg)
+
+> **Spatial UI Primitives Built for Speed and Precision.**  
+> **12 zero-dependency React, Next.js, Tailwind CSS & Vanilla HTML/CSS primitives paired with an interactive Three.js Cover Flow Studio & CLI Installer.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript: 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6.svg)](https://www.typescriptlang.org/)
@@ -10,11 +12,11 @@
 
 ---
 
-## Why MonarchUI?
+## Why RenderJet?
 
-Most UI libraries look generic. **MonarchUI** brings **Apple.com spatial precision**, **Bento.dev asymmetric layouts**, **Linear/Raycast Cmd+K ergonomics**, and **Royal Obsidian & Champagne Gold** luxury aesthetics directly into your codebase with **zero external runtime dependencies**.
+Most UI libraries look generic. **RenderJet** brings **Apple.com spatial precision**, **Bento asymmetric layouts**, **Linear/Raycast Cmd+K ergonomics**, and **architectural Three.js motion** directly into your codebase with **zero external runtime dependencies**.
 
-- **Copy-Paste or CLI Install:** Own every line of code. Drop clean React + Tailwind `.tsx` files or Vanilla HTML/CSS/JS directly into `./components/monarch/`.
+- **Copy-Paste or CLI Install:** Own every line of code. Drop clean React + Tailwind `.tsx` files or Vanilla HTML/CSS/JS directly into `./components/rjui/`.
 - **Interactive Luxury Studio (`Port 7272`):** Test 3D perspective tilt, cursor-tracked spotlight borders, spring dock magnification, Dynamic Island morphing, and 4 instant theme presets live in your browser.
 - **12 Flagship Primitives:** Not bloated with 200 basic buttons—12 signature, high-impact hero, navigation, spatial, and conversion components.
 
