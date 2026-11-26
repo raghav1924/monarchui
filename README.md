@@ -17,11 +17,6 @@
 | Three.js Spatial Cover Flow Stage | Live Interactive Preview & Code Studio |
 | :---: | :---: |
 | ![Three.js Spatial Cover Flow Stage](./public/screenshots/spatial-stage.jpg) | ![Live Interactive Preview & Code Studio](./public/screenshots/live-preview.jpg) |
-
-| RenderJet — Final Identity System (Figma) |
-| :---: |
-| ![RenderJet Final Identity System](./public/screenshots/brand-identity.png) |
-
 ---
 
 ## Why RenderJet?
