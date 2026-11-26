@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --hatch-color: rgba(0, 0, 0, 0.025);
-  --tick-minor: rgba(0, 0, 0, 0.14);
-  --tick-major: rgba(0, 0, 0, 0.3);
+  --hatch-color: rgba(0, 0, 0, 0.022);
+  --tick-minor: rgba(0, 0, 0, 0.12);
+  --tick-major: rgba(0, 0, 0, 0.26);
 }
 
 html.dark {
-  --hatch-color: rgba(255, 255, 255, 0.03);
-  --tick-minor: rgba(255, 255, 255, 0.16);
-  --tick-major: rgba(255, 255, 255, 0.34);
+  --hatch-color: rgba(255, 255, 255, 0.025);
+  --tick-minor: rgba(255, 255, 255, 0.14);
+  --tick-major: rgba(255, 255, 255, 0.30);
 }
 
 body {
