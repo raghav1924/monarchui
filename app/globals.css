@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --hatch-color: rgba(0, 0, 0, 0.045);
+  --tick-minor: rgba(0, 0, 0, 0.2);
+  --tick-major: rgba(0, 0, 0, 0.42);
+}
+
+html.dark {
+  --hatch-color: rgba(255, 255, 255, 0.045);
+  --tick-minor: rgba(255, 255, 255, 0.2);
+  --tick-major: rgba(255, 255, 255, 0.42);
+}
+
+body {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--hatch-color) 0,
+    var(--hatch-color) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+  -webkit-font-smoothing: antialiased;
+}
+
+.ruler-ticks {
+  height: 16px;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--tick-minor) 0,
+      var(--tick-minor) 1px,
+      transparent 1px,
+      transparent 8px
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--tick-major) 0,
+      var(--tick-major) 1px,
+      transparent 1px,
+      transparent 40px
+    );
+  background-size: 100% 4px, 100% 9px;
+  background-position: bottom left, bottom left;
+  background-repeat: no-repeat;
+}

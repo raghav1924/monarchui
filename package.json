@@ -1,7 +1,7 @@
 {
   "name": "monarchui",
   "version": "1.0.0",
-  "description": "Royal-Grade Spatial, Bento & Glassmorphic UI Component Registry, Interactive Playground & CLI Installer for React, Next.js & Tailwind CSS",
+  "description": "Technical Blueprint UI Component Registry & Three.js Spatial Studio built with Next.js, Tailwind CSS, and Three.js",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,25 +9,42 @@
     "monarchui": "bin/monarchui.js"
   },
   "scripts": {
-    "build": "node /Users/jatinsharma/.local/bin/lib/node_modules/typescript/bin/tsc",
-    "test": "npm run build && node --test dist/tests/*.test.js",
-    "start": "node dist/cli.js studio"
+    "dev": "next dev -p 7272",
+    "build": "next build",
+    "start": "next start -p 7272",
+    "build:cli": "tsc -p tsconfig.cli.json",
+    "test": "npm run build:cli && node --test dist/tests/*.test.js"
   },
   "keywords": [
-    "ui-components",
-    "design-system",
-    "bento-grid",
-    "glassmorphism",
-    "apple-ui",
-    "tailwind",
-    "react",
     "nextjs",
-    "spatial-ui",
-    "cli"
+    "tailwindcss",
+    "threejs",
+    "ui-components",
+    "bento-grid",
+    "blueprint-ui",
+    "design-system",
+    "react",
+    "typescript"
   ],
   "author": "Jatin Sharma <raghavjatin245@gmail.com> (https://jatinsh.netlify.app/)",
   "license": "MIT",
   "engines": {
     "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.170.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.2"
   }
 }

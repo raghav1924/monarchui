@@ -1,5 +1,8 @@
 node_modules/
+.next/
+out/
 dist/
 .DS_Store
 *.log
-components/
+components/monarch/
+next-env.d.ts
