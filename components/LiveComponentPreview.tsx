@@ -6,11 +6,45 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
   const [islandOpen, setIslandOpen] = useState(false);
   const [annual, setAnnual] = useState(true);
   const [splitPos, setSplitPos] = useState(50);
-  const [dockMouseX, setDockMouseX] = useState<number | null>(null);
+  const dockMouseX = React.useRef<number | null>(null);
+  const dockSizes = React.useRef<number[]>([40, 40, 40, 40, 40]);
   const dockItemRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
   const [mag, setMag] = useState({ x: 0, y: 0 });
   const [spot, setSpot] = useState({ x: 50, y: 50 });
+
+  React.useEffect(() => {
+    if (componentId !== 'spatial-dock') return;
+    let rafId = 0;
+    const baseSize = 40;
+    const maxSize = 72;
+    const radius = 140;
+
+    const tick = () => {
+      rafId = requestAnimationFrame(tick);
+      const mx = dockMouseX.current;
+      dockItemRefs.current.forEach((el, idx) => {
+        if (!el) return;
+        let target = baseSize;
+        if (mx !== null) {
+          const rect = el.getBoundingClientRect();
+          const center = rect.left + rect.width / 2;
+          const dist = Math.abs(mx - center);
+          if (dist < radius) {
+            const factor = Math.cos((dist / radius) * (Math.PI / 2));
+            target = baseSize + (maxSize - baseSize) * factor;
+          }
+        }
+        const curr = dockSizes.current[idx] ?? baseSize;
+        const next = curr + (target - curr) * 0.24;
+        dockSizes.current[idx] = next;
+        el.style.width = `${next.toFixed(2)}px`;
+        el.style.height = `${next.toFixed(2)}px`;
+      });
+    };
+    tick();
+    return () => cancelAnimationFrame(rafId);
+  }, [componentId]);
 
   switch (componentId) {
     case 'spotlight-bento':
@@ -38,47 +72,29 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
 
     case 'spatial-dock':
       return (
-        <div
-          onMouseMove={(e) => setDockMouseX(e.clientX)}
-          onMouseLeave={() => setDockMouseX(null)}
-          className="inline-flex items-end gap-2.5 border border-neutral-200 bg-white px-4 py-2.5 dark:border-neutral-800 dark:bg-[#111113]"
-        >
-          {['01', '02', '03', '04', '05'].map((lbl, idx) => {
-            let scale = 1;
-            let liftY = 0;
-            const el = dockItemRefs.current[idx];
-            if (dockMouseX !== null && el) {
-              const rect = el.getBoundingClientRect();
-              const center = rect.left + rect.width / 2;
-              const dist = Math.abs(dockMouseX - center);
-              const radius = 110;
-              if (dist < radius) {
-                const factor = Math.cos((dist / radius) * (Math.PI / 2));
-                scale = 1 + 0.45 * factor;
-                liftY = -10 * factor;
-              }
-            }
-            return (
+        <div className="flex h-24 items-end justify-center">
+          <div
+            onMouseMove={(e) => {
+              dockMouseX.current = e.clientX;
+            }}
+            onMouseLeave={() => {
+              dockMouseX.current = null;
+            }}
+            className="inline-flex h-[58px] items-end gap-3 rounded-2xl border border-neutral-200 bg-white px-3.5 py-2 dark:border-neutral-800 dark:bg-[#111113]"
+          >
+            {['01', '02', '03', '04', '05'].map((lbl, idx) => (
               <button
                 key={lbl}
                 ref={(node) => {
                   dockItemRefs.current[idx] = node;
                 }}
-                style={{
-                  transform: `translate3d(0, ${liftY.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`,
-                  transformOrigin: 'bottom center',
-                  willChange: 'transform',
-                  transition:
-                    dockMouseX === null
-                      ? 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)'
-                      : 'transform 40ms linear'
-                }}
-                className="grid h-9 w-9 place-items-center rounded border border-neutral-300 bg-neutral-50 font-mono text-[11px] font-semibold dark:border-neutral-700 dark:bg-neutral-900"
+                style={{ width: '40px', height: '40px' }}
+                className="flex shrink-0 items-center justify-center rounded-xl border border-neutral-300 bg-neutral-50 font-mono text-[11px] font-semibold dark:border-neutral-700 dark:bg-neutral-900"
               >
                 {lbl}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
       );
 

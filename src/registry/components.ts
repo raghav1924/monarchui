@@ -104,7 +104,7 @@ function SpotlightCell({ item, spotlightColor }: { item: BentoItem; spotlightCol
       { name: 'items', type: 'DockItem[]', defaultValue: '[]', description: 'Dock icons, labels, and click callbacks.' },
       { name: 'magnification', type: 'number', defaultValue: '1.45', description: 'Peak scale factor on direct hover.' }
     ],
-    reactCode: `import React, { useRef, useState } from 'react';
+    reactCode: `import React, { useEffect, useRef } from 'react';
 
 export interface DockItem {
   id: string;
@@ -113,61 +113,73 @@ export interface DockItem {
   onClick?: () => void;
 }
 
-export function SpatialDock({ items, magnification = 1.45 }: { items: DockItem[]; magnification?: number }) {
-  const [mouseX, setMouseX] = useState<number | null>(null);
+export function SpatialDock({ items, magnification = 1.75 }: { items: DockItem[]; magnification?: number }) {
+  const mouseX = useRef<number | null>(null);
+  const sizes = useRef<number[]>(items.map(() => 42));
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    let rafId = 0;
+    const base = 42;
+    const max = Math.round(base * magnification);
+    const radius = 140;
+
+    const tick = () => {
+      rafId = requestAnimationFrame(tick);
+      const mx = mouseX.current;
+      itemRefs.current.forEach((el, idx) => {
+        if (!el) return;
+        let target = base;
+        if (mx !== null) {
+          const rect = el.getBoundingClientRect();
+          const dist = Math.abs(mx - (rect.left + rect.width / 2));
+          if (dist < radius) {
+            target = base + (max - base) * Math.cos((dist / radius) * (Math.PI / 2));
+          }
+        }
+        const curr = sizes.current[idx] ?? base;
+        const next = curr + (target - curr) * 0.24;
+        sizes.current[idx] = next;
+        el.style.width = \`\${next.toFixed(2)}px\`;
+        el.style.height = \`\${next.toFixed(2)}px\`;
+      });
+    };
+    tick();
+    return () => cancelAnimationFrame(rafId);
+  }, [magnification]);
 
   return (
     <div
-      onMouseMove={(e) => setMouseX(e.clientX)}
-      onMouseLeave={() => setMouseX(null)}
-      className="inline-flex items-end gap-3 rounded-2xl border border-white/15 bg-black/60 px-4 py-3 backdrop-blur-2xl"
+      onMouseMove={(e) => { mouseX.current = e.clientX; }}
+      onMouseLeave={() => { mouseX.current = null; }}
+      className="inline-flex h-[60px] items-end gap-3 rounded-2xl border border-white/15 bg-black/60 px-3.5 py-2 backdrop-blur-2xl"
     >
-      {items.map((item, idx) => {
-        let scale = 1;
-        let liftY = 0;
-        const el = itemRefs.current[idx];
-        if (mouseX !== null && el) {
-          const rect = el.getBoundingClientRect();
-          const dist = Math.abs(mouseX - (rect.left + rect.width / 2));
-          if (dist < 115) {
-            const factor = Math.cos((dist / 115) * (Math.PI / 2));
-            scale = 1 + (magnification - 1) * factor;
-            liftY = -10 * factor;
-          }
-        }
-        return (
-          <button
-            key={item.id}
-            ref={(node) => { itemRefs.current[idx] = node; }}
-            onClick={item.onClick}
-            style={{
-              transform: \`translate3d(0, \${liftY.toFixed(2)}px, 0) scale(\${scale.toFixed(3)})\`,
-              transformOrigin: 'bottom center',
-              willChange: 'transform',
-              transition: mouseX === null ? 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)' : 'transform 40ms linear'
-            }}
-            className="group relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white"
-          >
-            {item.icon}
-            <span className="pointer-events-none absolute -top-9 rounded-md border border-white/15 bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white opacity-0 transition-opacity duration-100 group-hover:opacity-100">
-              {item.label}
-            </span>
-          </button>
-        );
-      })}
+      {items.map((item, idx) => (
+        <button
+          key={item.id}
+          ref={(node) => { itemRefs.current[idx] = node; }}
+          onClick={item.onClick}
+          style={{ width: '42px', height: '42px' }}
+          className="group relative flex shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white"
+        >
+          {item.icon}
+          <span className="pointer-events-none absolute -top-9 rounded-md border border-white/15 bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white opacity-0 transition-opacity duration-100 group-hover:opacity-100">
+            {item.label}
+          </span>
+        </button>
+      ))}
     </div>
   );
 }
 `,
-    vanillaCode: `<nav class="spatial-dock" onmousemove="const x=event.clientX;this.querySelectorAll('.dock-item').forEach(b=>{const r=b.getBoundingClientRect();const d=Math.abs(x-(r.left+r.width/2));const f=d<115?Math.cos((d/115)*(Math.PI/2)):0;b.style.transition='transform 40ms linear';b.style.transform='translate3d(0,'+(-10*f).toFixed(2)+'px,0) scale('+(1+0.45*f).toFixed(3)+')';})" onmouseleave="this.querySelectorAll('.dock-item').forEach(b=>{b.style.transition='transform 220ms cubic-bezier(.22,1,.36,1)';b.style.transform='none';})">
+    vanillaCode: `<nav class="spatial-dock" onmousemove="const x=event.clientX;this.querySelectorAll('.dock-item').forEach(b=>{const r=b.getBoundingClientRect();const d=Math.abs(x-(r.left+r.width/2));const f=d<140?Math.cos((d/140)*(Math.PI/2)):0;const s=(42+30*f).toFixed(1)+'px';b.style.width=s;b.style.height=s;})" onmouseleave="this.querySelectorAll('.dock-item').forEach(b=>{b.style.width='42px';b.style.height='42px';})">
   <button class="dock-item" title="Home">01</button>
   <button class="dock-item" title="Studio">02</button>
   <button class="dock-item" title="Tokens">03</button>
 </nav>
 <style>
-.spatial-dock { display:inline-flex; gap:12px; padding:12px 18px; border-radius:20px; background:rgba(12,13,18,0.75); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.14); }
-.dock-item { width:44px; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.06); color:#fff; transform-origin:bottom center; will-change:transform; cursor:pointer; }
+.spatial-dock { display:inline-flex; align-items:flex-end; height:60px; gap:12px; padding:8px 14px; border-radius:20px; background:rgba(12,13,18,0.75); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.14); }
+.dock-item { width:42px; height:42px; flex-shrink:0; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.06); color:#fff; transition:width 90ms ease-out, height 90ms ease-out; cursor:pointer; }
 </style>`
   },
   {
