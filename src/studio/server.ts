@@ -1,7 +1,7 @@
 /**
- * MonarchUI Interactive Luxury Studio Server (Port 7272)
- * Showcases all 12 Royal & Spatial UI components live with theme switching,
- * interactive physics previews, Props API tables, Cmd+K palette, and 1-click code export.
+ * MonarchUI Technical Blueprint & Structural Bento Grid Studio (Port 7272)
+ * Exposed wireframe shell, 1px hairline grids, diagonal hatch gutters,
+ * ruler tick scales, corner crosshairs (+), zero drop shadows, and light/dark monochrome polarity.
  * Author: Jatin Sharma (https://jatinsh.netlify.app/)
  */
 
@@ -44,7 +44,7 @@ export class StudioServer {
         }
 
         if (req.method === 'GET' && url.pathname === '/api/theme-css') {
-          const preset = (url.searchParams.get('id') || 'royal-obsidian') as ThemePresetId;
+          const preset = (url.searchParams.get('id') || 'swiss-editorial') as ThemePresetId;
           res.writeHead(200, { 'Content-Type': 'text/css' });
           res.end(ThemeEngine.generateCssVariables(preset));
           return;
@@ -68,385 +68,633 @@ export class StudioServer {
 
   private renderHtml(): string {
     const componentsJson = JSON.stringify(ComponentRegistry.list());
-    const themesJson = JSON.stringify(ThemeEngine.listPresets());
 
     return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-mode="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MonarchUI Studio | Royal Spatial &amp; Bento UI Registry</title>
+  <title>MonarchUI — Technical Blueprint UI Registry</title>
   <style>
     :root {
-      --bg: #050507;
-      --surface: rgba(18, 19, 26, 0.72);
-      --border: rgba(229, 193, 88, 0.18);
-      --accent: #e5c158;
-      --accent2: #f5e1a4;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-hover: #f4f4f5;
+      --border: #e4e4e7;
+      --border-strong: #a1a1aa;
+      --text: #09090b;
+      --muted: #71717a;
+      --hatch: rgba(0, 0, 0, 0.045);
+      --tick: rgba(0, 0, 0, 0.22);
+      --code-bg: #f4f4f5;
+      --sans: "Inter", "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: "JetBrains Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    html[data-mode="dark"] {
+      --bg: #09090b;
+      --surface: #111113;
+      --surface-hover: #18181b;
+      --border: #27272a;
+      --border-strong: #52525b;
       --text: #fafafa;
       --muted: #a1a1aa;
-      --glow: rgba(229, 193, 88, 0.25);
-      --blur: 20px;
-      --radius: 20px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --hatch: rgba(255, 255, 255, 0.045);
+      --tick: rgba(255, 255, 255, 0.22);
+      --code-bg: #111113;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image: repeating-linear-gradient(
+        45deg,
+        var(--hatch) 0,
+        var(--hatch) 1px,
+        transparent 1px,
+        transparent 10px
+      );
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      font-family: var(--sans);
       min-height: 100vh;
-      overflow-x: hidden;
-      transition: background 0.35s ease, color 0.35s ease;
+      -webkit-font-smoothing: antialiased;
     }
-    .aurora-bg {
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background:
-        radial-gradient(600px circle at 20% 10%, var(--glow), transparent 60%),
-        radial-gradient(500px circle at 85% 80%, rgba(56, 189, 248, 0.08), transparent 60%);
+
+    /* Exposed Wireframe Shell */
+    .shell {
+      max-width: 1152px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      position: relative;
     }
-    .container { position: relative; z-index: 1; max-width: 1320px; margin: 0 auto; padding: 28px 24px 80px; }
-    header {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
-      padding: 14px 22px; border-radius: 999px; border: 1px solid var(--border);
-      background: var(--surface); backdrop-filter: blur(var(--blur)); margin-bottom: 34px;
+
+    /* Full-bleed Horizontal Dividers & Corner Crosshairs */
+    .section {
+      position: relative;
+      border-bottom: 1px solid var(--border);
     }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .crown {
-      width: 34px; height: 34px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: #050507; display: grid; place-items: center; font-weight: 900; font-size: 16px;
-      box-shadow: 0 0 22px var(--glow);
+
+    .section-dashed {
+      position: relative;
+      border-bottom: 1px dashed var(--border);
     }
-    .brand h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
-    .brand span { font-size: 12px; color: var(--muted); margin-left: 6px; }
-    .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    select, button { font-family: inherit; }
-    .theme-select {
-      background: rgba(0,0,0,0.25); color: var(--text); border: 1px solid var(--border);
-      border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+
+    .crosshair {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      pointer-events: none;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1;
+      color: var(--border-strong);
+      user-select: none;
     }
-    .cmd-btn {
-      background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border);
-      border-radius: 999px; padding: 7px 14px; font-size: 12px; cursor: pointer;
+    .ch-bl { bottom: -5px; left: -5px; }
+    .ch-br { bottom: -5px; right: -5px; }
+
+    /* Ruler Scale Divider */
+    .ruler-strip {
+      height: 16px;
+      border-bottom: 1px solid var(--border);
+      background-image:
+        repeating-linear-gradient(to right, var(--tick) 0, var(--tick) 1px, transparent 1px, transparent 8px),
+        repeating-linear-gradient(to right, var(--border-strong) 0, var(--border-strong) 1px, transparent 1px, transparent 40px);
+      background-size: 100% 4px, 100% 9px;
+      background-position: bottom left, bottom left;
+      background-repeat: no-repeat;
     }
-    .hero {
-      text-align: center; padding: 36px 16px 42px;
+
+    /* Monospace Technical Badges */
+    .tech-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
     }
-    .eyebrow {
-      display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 0.22em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
-      border: 1px solid var(--border); padding: 5px 14px; border-radius: 999px;
+
+    .kbd {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
       background: var(--surface);
+      color: var(--muted);
     }
-    .hero h2 {
-      font-size: clamp(32px, 5vw, 58px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.06;
-      max-width: 820px; margin: 0 auto;
+
+    /* Compact Tactile Buttons (Zero Drop Shadows) */
+    .btn {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 13px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-strong);
+    }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+      background: var(--text);
+    }
+
+    /* Top Header Bar */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+    .brand-mark {
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 52px 24px 44px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: end;
+    }
+    @media (max-width: 768px) { .hero { grid-template-columns: 1fr; } }
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+      margin-top: 12px;
+      max-width: 680px;
     }
     .hero p {
-      max-width: 620px; margin: 16px auto 26px; font-size: 15px; line-height: 1.6; color: var(--muted);
+      margin-top: 14px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 580px;
     }
-    .hero-cta-row { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; }
-    .royal-btn {
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: #050507; border: none; border-radius: 999px; padding: 12px 26px;
-      font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 0 30px var(--glow);
-      transition: transform 0.15s ease-out;
+    .hero-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .cli-pill {
-      font-family: var(--mono); font-size: 12px; padding: 11px 18px; border-radius: 999px;
-      border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer;
-    }
-    /* Live Interactive Bento Showcase */
-    .bento-showcase {
-      display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; margin: 28px 0 42px;
-    }
-    .bento-cell {
-      position: relative; overflow: hidden; border-radius: var(--radius);
-      border: 1px solid var(--border); background: var(--surface);
-      backdrop-filter: blur(var(--blur)); padding: 22px;
-      transition: transform 0.25s ease, border-color 0.25s ease;
-    }
-    .bento-cell::before {
-      content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; pointer-events: none;
-      background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), var(--glow), transparent 60%);
-    }
-    .bento-cell:hover::before { opacity: 1; }
-    .col-4 { grid-column: span 4; }
-    .col-6 { grid-column: span 6; }
-    .col-8 { grid-column: span 8; }
-    .col-12 { grid-column: span 12; }
-    @media (max-width: 900px) { .col-4, .col-6, .col-8 { grid-column: span 12; } }
-    .cell-kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
-    .cell-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
-    .cell-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 
-    /* Spatial Dock Preview */
-    .dock-bar {
-      display: inline-flex; align-items: flex-end; gap: 10px; padding: 10px 16px;
-      border-radius: 18px; border: 1px solid var(--border); background: rgba(0,0,0,0.45);
+    /* 1px Hairline Structural Grid (Zero Shadows) */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
     }
-    .dock-ico {
-      width: 40px; height: 40px; border-radius: 11px; border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06); display: grid; place-items: center; font-size: 18px;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer;
+    @media (max-width: 860px) { .grid-3 { grid-template-columns: 1fr; } }
+    .cell {
+      background: var(--bg);
+      padding: 24px;
+      position: relative;
+      transition: background 0.15s ease;
     }
-    .dock-ico:hover { transform: scale(1.42) translateY(-8px); }
+    .cell:hover {
+      background: var(--surface);
+    }
+    .cell-span-2 {
+      grid-column: span 2;
+    }
+    @media (max-width: 860px) { .cell-span-2 { grid-column: span 1; } }
 
-    /* Dynamic Island */
-    .island {
-      display: inline-flex; align-items: center; gap: 10px; background: #000; color: #fff;
-      border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 9px 18px;
-      font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    /* Interactive Spring Coverflow Deck */
+    .deck-stage {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
     }
-    .island .dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
-    .island .more { display: none; color: #94a3b8; font-weight: 400; }
-    .island.open { padding: 13px 22px; }
-    .island.open .more { display: inline; }
+    .deck-card {
+      position: absolute;
+      width: 240px;
+      height: 148px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease, border-color 0.2s ease;
+    }
+    .deck-card.active {
+      border-color: var(--text);
+      z-index: 5;
+    }
+    .deck-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
 
-    /* Marquee */
-    .marquee { overflow: hidden; mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent); }
-    .marquee-track { display: flex; gap: 28px; width: max-content; animation: mscroll 18s linear infinite; }
-    .marquee-track:hover { animation-play-state: paused; }
-    .marquee-pill {
-      padding: 7px 16px; border-radius: 999px; border: 1px solid var(--border);
-      font-size: 11px; font-weight: 700; letter-spacing: 0.16em; color: var(--muted);
+    /* Split Rail Registry Workbench */
+    .workbench {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 1px;
+      background: var(--border);
     }
-    @keyframes mscroll { to { transform: translateX(-50%); } }
+    @media (max-width: 860px) { .workbench { grid-template-columns: 1fr; } }
+    .rail {
+      background: var(--bg);
+    }
+    .rail-item {
+      width: 100%;
+      text-align: left;
+      background: var(--bg);
+      border: none;
+      border-bottom: 1px dashed var(--border);
+      padding: 12px 18px;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.12s ease;
+    }
+    .rail-item:hover { background: var(--surface-hover); }
+    .rail-item.active {
+      background: var(--surface);
+      font-weight: 600;
+      border-left: 2px solid var(--text);
+    }
+    .rail-idx {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-right: 8px;
+    }
 
-    /* Registry Split Workbench */
-    .workbench { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
-    @media (max-width: 900px) { .workbench { grid-template-columns: 1fr; } }
-    .sidebar {
-      border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface);
-      backdrop-filter: blur(var(--blur)); padding: 14px;
-    }
-    .comp-item {
-      width: 100%; text-align: left; background: transparent; border: 1px solid transparent;
-      color: var(--text); padding: 10px 12px; border-radius: 12px; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;
-      font-size: 13px; font-weight: 600;
-    }
-    .comp-item:hover, .comp-item.active {
-      background: rgba(255,255,255,0.06); border-color: var(--border);
-    }
-    .tier-tag {
-      font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 999px;
-      background: rgba(229,193,88,0.14); color: var(--accent);
-    }
     .inspector {
-      border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface);
-      backdrop-filter: blur(var(--blur)); padding: 24px;
+      background: var(--bg);
+      padding: 28px;
+      min-width: 0;
     }
-    .tabs { display: flex; gap: 8px; margin: 16px 0 12px; flex-wrap: wrap; }
-    .tab-btn {
-      background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border);
-      border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
+    .preview-box {
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 24px;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .tab-btn.active { background: var(--accent); color: #050507; }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin: 20px 0 10px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .tab.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
     pre code {
-      display: block; background: #030305; border: 1px solid var(--border); border-radius: 12px;
-      padding: 16px; font-family: var(--mono); font-size: 12px; line-height: 1.55;
-      color: #e4e4e7; overflow-x: auto; max-height: 360px;
+      display: block;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--text);
+      overflow-x: auto;
+      max-height: 340px;
     }
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px; }
-    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
-    th { color: var(--accent); font-size: 11px; text-transform: uppercase; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+    }
+    th, td {
+      text-align: left;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    th {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      background: var(--surface);
+    }
+
+    /* Cmd+K Modal */
     .modal-bg {
-      position: fixed; inset: 0; z-index: 50; display: none; align-items: flex-start; justify-content: center;
-      padding-top: 90px; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px);
+      position: fixed; inset: 0; z-index: 50; display: none;
+      align-items: flex-start; justify-content: center; padding-top: 96px;
+      background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
     }
     .modal-bg.open { display: flex; }
     .modal-box {
-      width: 100%; max-width: 520px; border-radius: 18px; border: 1px solid var(--border);
-      background: #0c0d12; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.65);
+      width: 100%; max-width: 520px; background: var(--bg);
+      border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden;
     }
     .modal-box input {
-      width: 100%; padding: 15px 18px; background: transparent; border: none;
-      border-bottom: 1px solid var(--border); color: #fff; font-size: 14px; outline: none;
+      width: 100%; padding: 14px 16px; background: var(--surface);
+      border: none; border-bottom: 1px solid var(--border);
+      color: var(--text); font-family: var(--mono); font-size: 13px; outline: none;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
   </style>
 </head>
 <body>
-  <div class="aurora-bg"></div>
-  <div class="container">
-    <header>
+  <div class="shell">
+    <!-- Topbar -->
+    <header class="section topbar">
+      <span class="crosshair ch-bl">+</span>
+      <span class="crosshair ch-br">+</span>
       <div class="brand">
-        <div class="crown">M</div>
-        <div>
-          <h1>MonarchUI <span>v1.0 &middot; 12 Luxury Primitives</span></h1>
-        </div>
+        <div class="brand-mark">M</div>
+        <span>MonarchUI</span>
+        <span class="tech-label" style="margin-left:6px;">v1.0.0</span>
       </div>
-      <div class="nav-actions">
-        <select id="themeSelect" class="theme-select" onchange="applyTheme(this.value)"></select>
-        <button class="cmd-btn" onclick="toggleCmdK()">&#8984;K Quick Jump</button>
-        <a href="https://jatinsh.netlify.app/" target="_blank" style="font-size:12px; color:var(--accent); text-decoration:none; font-weight:700;">by Jatin Sharma</a>
+      <div class="topbar-actions">
+        <button class="btn" onclick="toggleCmdK()">Search <span class="kbd">&#8984;K</span></button>
+        <button class="btn" id="modeBtn" onclick="toggleMode()">Dark Mode</button>
+        <a href="https://jatinsh.netlify.app/" target="_blank" class="btn">Jatin Sharma &nearr;</a>
       </div>
     </header>
 
-    <section class="hero">
-      <div class="eyebrow">Royal Spatial &amp; Bento Component Registry</div>
-      <h2>Interfaces Crafted Like Luxury Hardware.</h2>
-      <p>Copy-paste or CLI-install 12 zero-dependency React, Tailwind &amp; Vanilla primitives inspired by Apple.com, Linear, and Bento.dev.</p>
-      <div class="hero-cta-row">
-        <button class="royal-btn" id="magBtn" onmousemove="magnetize(event, this)" onmouseleave="this.style.transform='none'" onclick="document.getElementById('registrySection').scrollIntoView({behavior:'smooth'})">
-          Explore 12 Components &rarr;
-        </button>
-        <button class="cli-pill" onclick="copyText('npx monarchui add spotlight-bento', this)">npx monarchui add spotlight-bento</button>
+    <!-- Hero -->
+    <section class="section hero">
+      <span class="crosshair ch-bl">+</span>
+      <span class="crosshair ch-br">+</span>
+      <div>
+        <div class="tech-label">01 // OVERVIEW &middot; STRUCTURAL UI PRIMITIVES</div>
+        <h1>Zero-dependency React &amp; Tailwind UI components with architectural precision.</h1>
+        <p>Copy-paste or CLI-install 12 self-contained spatial, bento, and interactive primitives. Engineered with crisp 1px wireframe geometry and spring physics.</p>
+      </div>
+      <div class="hero-controls">
+        <button class="btn btn-primary" onclick="copyText('npx monarchui add spotlight-bento', this)">npx monarchui add spotlight-bento</button>
+        <button class="btn" onclick="document.getElementById('registryAnchor').scrollIntoView({behavior:'smooth'})">Browse 12 Specs &darr;</button>
       </div>
     </section>
 
-    <section class="bento-showcase">
-      <div class="bento-cell col-8" onmousemove="spot(event, this)">
-        <div class="cell-kicker">01 &middot; Live Spotlight Bento &amp; Marquee</div>
-        <div class="cell-title">Cursor-Tracked Hairline Illumination</div>
-        <p class="cell-desc">Move your cursor across any card to illuminate its borders, paired with our infinite alpha-masked marquee.</p>
-        <div class="marquee">
-          <div class="marquee-track">
-            <span class="marquee-pill">APPLE SPATIAL</span><span class="marquee-pill">BENTO.DEV</span>
-            <span class="marquee-pill">LINEAR PRECISION</span><span class="marquee-pill">STRIPE 3D</span>
-            <span class="marquee-pill">RAYCAST CMD+K</span><span class="marquee-pill">APPLE SPATIAL</span>
-            <span class="marquee-pill">BENTO.DEV</span><span class="marquee-pill">LINEAR PRECISION</span>
-            <span class="marquee-pill">STRIPE 3D</span><span class="marquee-pill">RAYCAST CMD+K</span>
+    <div class="ruler-strip"></div>
+
+    <!-- Interactive Structural Grid -->
+    <section class="section grid-3">
+      <span class="crosshair ch-bl">+</span>
+      <span class="crosshair ch-br">+</span>
+
+      <div class="cell cell-span-2">
+        <div class="tech-label">02 // INTERACTIVE DECK &middot; SPRING PHYSICS</div>
+        <div class="deck-stage" id="deckStage"></div>
+        <div class="deck-nav">
+          <div style="display:flex; gap:6px;">
+            <button class="btn" onclick="stepDeck(-1)"><span class="kbd">&larr;</span> Prev</button>
+            <button class="btn" onclick="stepDeck(1)">Next <span class="kbd">&rarr;</span></button>
+          </div>
+          <span class="tech-label" id="deckCounter">01 / 12</span>
+        </div>
+      </div>
+
+      <div class="cell" style="display:flex; flex-direction:column; justify-content:space-between; gap:18px;">
+        <div>
+          <div class="tech-label">03 // TELEMETRY</div>
+          <div style="margin-top:14px; display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border);">
+            <div style="padding:12px; border-right:1px solid var(--border); border-bottom:1px solid var(--border);">
+              <div class="tech-label">PRIMITIVES</div>
+              <div style="font-family:var(--mono); font-size:22px; font-weight:600; margin-top:4px;">12</div>
+            </div>
+            <div style="padding:12px; border-bottom:1px solid var(--border);">
+              <div class="tech-label">DEPS</div>
+              <div style="font-family:var(--mono); font-size:22px; font-weight:600; margin-top:4px;">0</div>
+            </div>
+            <div style="padding:12px; border-right:1px solid var(--border);">
+              <div class="tech-label">THEMES</div>
+              <div style="font-family:var(--mono); font-size:22px; font-weight:600; margin-top:4px;">4</div>
+            </div>
+            <div style="padding:12px;">
+              <div class="tech-label">SHADOWS</div>
+              <div style="font-family:var(--mono); font-size:22px; font-weight:600; margin-top:4px;">0px</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px dashed var(--border); padding-top:16px;">
+          <div class="tech-label">04 // SPLIT COMPARISON</div>
+          <div style="position:relative; height:48px; margin-top:10px; border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:flex-end; padding:0 12px; font-family:var(--mono); font-size:11px;">
+            <span>MONARCH</span>
+            <div id="splitOverlay" style="position:absolute; inset:0 auto 0 0; width:50%; background:var(--surface-hover); border-right:1px solid var(--text); display:flex; align-items:center; padding-left:12px; overflow:hidden; color:var(--muted);">RAW</div>
+            <input type="range" min="10" max="90" value="50" oninput="document.getElementById('splitOverlay').style.width=this.value+'%'" style="position:absolute; inset:0; opacity:0; cursor:ew-resize;" />
           </div>
         </div>
       </div>
-
-      <div class="bento-cell col-4" id="card3d" onmousemove="tilt3d(event, this)" onmouseleave="this.style.transform='none'">
-        <div class="cell-kicker">02 &middot; Kinetic 3D Card</div>
-        <div class="cell-title">Monarch Black Edition</div>
-        <p class="cell-desc">Hover to feel real-time 3D perspective physics &amp; specular sheen.</p>
-        <div style="font-family:var(--mono); font-size:24px; font-weight:900; color:var(--accent);">$148,920 <span style="font-size:12px; color:#10b981;">+24.8%</span></div>
-      </div>
-
-      <div class="bento-cell col-4" onmousemove="spot(event, this)">
-        <div class="cell-kicker">03 &middot; Spatial Glass Dock</div>
-        <div class="cell-title">Spring Magnification</div>
-        <p class="cell-desc">Hover icons for Cupertino dock lift.</p>
-        <div class="dock-bar">
-          <div class="dock-ico">&#9889;</div>
-          <div class="dock-ico">&#128142;</div>
-          <div class="dock-ico">&#127912;</div>
-          <div class="dock-ico">&#128640;</div>
-        </div>
-      </div>
-
-      <div class="bento-cell col-4" onmousemove="spot(event, this)">
-        <div class="cell-kicker">04 &middot; Dynamic Island Pill</div>
-        <div class="cell-title">Morphing Live Status</div>
-        <p class="cell-desc">Click pill to expand live telemetry.</p>
-        <div class="island" onclick="this.classList.toggle('open')">
-          <span class="dot"></span> Deployment Live <span class="more">&middot; 38 Edge PoPs Synced</span>
-        </div>
-      </div>
-
-      <div class="bento-cell col-4" onmousemove="spot(event, this)">
-        <div class="cell-kicker">05 &middot; Tactile Split Compare</div>
-        <div class="cell-title">Drag to Compare UI</div>
-        <div style="position:relative; height:64px; border-radius:12px; overflow:hidden; background:#14151c; border:1px solid var(--border); display:flex; align-items:center; justify-content:flex-end; padding:12px; font-size:11px; font-weight:800; color:var(--accent);">
-          <span>MONARCH UI</span>
-          <div id="splitPane" style="position:absolute; inset:0 auto 0 0; width:48%; background:#27272a; border-right:2px solid var(--accent); display:flex; align-items:center; padding:12px; color:#a1a1aa;">STANDARD</div>
-          <input type="range" min="10" max="90" value="48" oninput="document.getElementById('splitPane').style.width=this.value+'%'" style="position:absolute; inset:0; opacity:0; cursor:ew-resize;" />
-        </div>
-      </div>
     </section>
 
-    <section id="registrySection" class="workbench">
-      <aside class="sidebar" id="componentList"></aside>
+    <!-- Registry Header -->
+    <div id="registryAnchor" class="section-dashed" style="padding:14px 24px; display:flex; justify-content:space-between; align-items:center;">
+      <span class="tech-label">05 // COMPONENT REGISTRY &amp; CODE INSPECTOR</span>
+      <span class="tech-label">REACT + TAILWIND &middot; VANILLA HTML/CSS</span>
+    </div>
+
+    <!-- Split Rail Workbench -->
+    <section class="section workbench">
+      <span class="crosshair ch-bl">+</span>
+      <span class="crosshair ch-br">+</span>
+      <aside class="rail" id="railList"></aside>
       <main class="inspector" id="inspectorPane"></main>
     </section>
+
+    <div class="ruler-strip"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span class="tech-label">MONARCHUI // ARCHITECTURAL DESIGN SYSTEM</span>
+      <span class="tech-label">MIT LICENSE &middot; BUILT BY JATIN SHARMA</span>
+    </footer>
   </div>
 
+  <!-- Cmd+K Modal -->
   <div class="modal-bg" id="cmdkModal" onclick="toggleCmdK()">
     <div class="modal-box" onclick="event.stopPropagation()">
-      <input id="cmdkInput" placeholder="Jump to any MonarchUI component..." oninput="renderCmdK(this.value)" />
-      <div id="cmdkResults" style="padding:8px; max-height:280px; overflow-y:auto;"></div>
+      <input id="cmdkInput" placeholder="Filter components by name or category..." oninput="renderCmdK(this.value)" />
+      <div id="cmdkResults" style="max-height:280px; overflow-y:auto;"></div>
     </div>
   </div>
 
   <script>
     const COMPONENTS = ${componentsJson};
-    const THEMES = ${themesJson};
-    let activeId = COMPONENTS[0].id;
+    let activeIdx = 0;
     let codeMode = 'react';
 
-    function spot(e, el) {
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    function toggleMode() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-mode') === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-mode', next);
+      document.getElementById('modeBtn').innerText = next === 'light' ? 'Dark Mode' : 'Light Mode';
     }
-    function tilt3d(e, el) {
-      spot(e, el);
-      const r = el.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width;
-      const py = (e.clientY - r.top) / r.height;
-      el.style.transform = 'perspective(900px) rotateX(' + ((0.5 - py) * 16) + 'deg) rotateY(' + ((px - 0.5) * 16) + 'deg)';
-    }
-    function magnetize(e, el) {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - (r.left + r.width / 2)) * 0.22;
-      const y = (e.clientY - (r.top + r.height / 2)) * 0.22;
-      el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
-    }
-    function applyTheme(id) {
-      const t = THEMES.find(x => x.id === id) || THEMES[0];
-      const root = document.documentElement.style;
-      root.setProperty('--bg', t.bgCanvas);
-      root.setProperty('--surface', t.bgSurface);
-      root.setProperty('--border', t.borderHairline);
-      root.setProperty('--accent', t.accentPrimary);
-      root.setProperty('--accent2', t.accentSecondary);
-      root.setProperty('--text', t.textPrimary);
-      root.setProperty('--muted', t.textMuted);
-      root.setProperty('--glow', t.glowColor);
-      root.setProperty('--blur', t.blurPx + 'px');
-      root.setProperty('--radius', t.radiusPx + 'px');
-    }
+
     function copyText(txt, btn) {
       navigator.clipboard?.writeText(txt);
-      if (btn) { const old = btn.innerText; btn.innerText = 'Copied!'; setTimeout(() => btn.innerText = old, 1200); }
+      if (btn) {
+        const old = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => { btn.innerText = old; }, 1100);
+      }
     }
-    function renderSidebar() {
-      document.getElementById('componentList').innerHTML = COMPONENTS.map(c =>
-        '<button class="comp-item ' + (c.id === activeId ? 'active' : '') + '" onclick="selectComponent(\\'' + c.id + '\\')">' +
-        '<span>' + c.name + '</span><span class="tier-tag">' + c.tier + '</span></button>'
+
+    function renderDeck() {
+      const stage = document.getElementById('deckStage');
+      stage.innerHTML = COMPONENTS.map((c, idx) => {
+        const offset = idx - activeIdx;
+        const abs = Math.abs(offset);
+        const visible = abs <= 2;
+        const tx = offset * 175;
+        const scale = offset === 0 ? 1 : 0.86;
+        const rotY = offset * -14;
+        const opacity = visible ? (offset === 0 ? 1 : 0.52) : 0;
+        return '<div class="deck-card ' + (offset === 0 ? 'active' : '') + '" onclick="selectIndex(' + idx + ')" style="transform: perspective(900px) translateX(' + tx + 'px) scale(' + scale + ') rotateY(' + rotY + 'deg); opacity:' + opacity + '; z-index:' + (10 - abs) + '; pointer-events:' + (visible ? 'auto' : 'none') + ';">' +
+          '<div class="tech-label">' + String(idx + 1).padStart(2, '0') + ' // ' + c.category + '</div>' +
+          '<div><div style="font-size:15px; font-weight:600; letter-spacing:-0.02em;">' + c.name + '</div>' +
+          '<div style="font-size:11px; color:var(--muted); margin-top:4px;">' + c.filename + '</div></div>' +
+          '</div>';
+      }).join('');
+      document.getElementById('deckCounter').innerText = String(activeIdx + 1).padStart(2, '0') + ' / ' + String(COMPONENTS.length).padStart(2, '0');
+    }
+
+    function stepDeck(delta) {
+      activeIdx = (activeIdx + delta + COMPONENTS.length) % COMPONENTS.length;
+      renderAll();
+    }
+
+    function selectIndex(idx) {
+      activeIdx = idx;
+      renderAll();
+    }
+
+    function renderRail() {
+      document.getElementById('railList').innerHTML = COMPONENTS.map((c, idx) =>
+        '<button class="rail-item ' + (idx === activeIdx ? 'active' : '') + '" onclick="selectIndex(' + idx + ')">' +
+          '<span><span class="rail-idx">' + String(idx + 1).padStart(2, '0') + '</span>' + c.name + '</span>' +
+          '<span class="tech-label">' + c.category + '</span>' +
+        '</button>'
       ).join('');
     }
-    function selectComponent(id) {
-      activeId = id;
-      renderSidebar();
-      renderInspector();
-    }
+
     function setCodeMode(mode) {
       codeMode = mode;
       renderInspector();
     }
+
     function renderInspector() {
-      const c = COMPONENTS.find(x => x.id === activeId) || COMPONENTS[0];
+      const c = COMPONENTS[activeIdx];
       const code = codeMode === 'react' ? c.reactCode : c.vanillaCode;
       const escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       document.getElementById('inspectorPane').innerHTML =
-        '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">' +
-          '<div><div class="cell-kicker">' + c.category + ' &middot; ' + c.tier + ' Tier</div>' +
-          '<h3 style="font-size:24px; font-weight:800;">' + c.name + '</h3>' +
-          '<p style="color:var(--muted); font-size:13px; margin-top:6px;">' + c.description + '</p></div>' +
-          '<button class="cli-pill" onclick="copyText(\\'npx monarchui add ' + c.id + '\\', this)">npx monarchui add ' + c.id + '</button>' +
-        '</div>' +
-        '<div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">' +
-          c.designPatterns.map(p => '<span class="tier-tag">' + p + '</span>').join('') +
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;">' +
+          '<div><div class="tech-label">' + String(activeIdx + 1).padStart(2, '0') + ' // ' + c.category + ' &middot; ' + c.id + '</div>' +
+          '<h2 style="font-size:22px; font-weight:600; letter-spacing:-0.025em; margin-top:6px;">' + c.name + '</h2>' +
+          '<p style="font-size:13px; color:var(--muted); margin-top:6px; max-width:580px; line-height:1.55;">' + c.description + '</p></div>' +
+          '<button class="btn" onclick="copyText(\\'npx monarchui add ' + c.id + '\\', this)"><code>npx monarchui add ' + c.id + '</code></button>' +
         '</div>' +
         '<div class="tabs">' +
-          '<button class="tab-btn ' + (codeMode==='react'?'active':'') + '" onclick="setCodeMode(\\'react\\')">React + Tailwind (' + c.filename + ')</button>' +
-          '<button class="tab-btn ' + (codeMode==='vanilla'?'active':'') + '" onclick="setCodeMode(\\'vanilla\\')">HTML + CSS + JS</button>' +
-          '<button class="tab-btn" id="copyCodeBtn">Copy Source Code</button>' +
+          '<button class="tab ' + (codeMode==='react'?'active':'') + '" onclick="setCodeMode(\\'react\\')">React + Tailwind (' + c.filename + ')</button>' +
+          '<button class="tab ' + (codeMode==='vanilla'?'active':'') + '" onclick="setCodeMode(\\'vanilla\\')">HTML + CSS + JS</button>' +
+          '<button class="tab" id="copyCodeBtn">Copy Source</button>' +
         '</div>' +
         '<pre><code>' + escaped + '</code></pre>' +
-        '<h4 style="margin-top:20px; font-size:13px; text-transform:uppercase; color:var(--accent);">Props API</h4>' +
+        '<div class="tech-label" style="margin-top:20px;">PROPS SPECIFICATION</div>' +
         '<table><thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody>' +
-          c.props.map(p => '<tr><td style="font-family:var(--mono); color:var(--accent2);">' + p.name + '</td><td style="font-family:var(--mono);">' + p.type + '</td><td style="font-family:var(--mono);">' + p.defaultValue + '</td><td style="color:var(--muted);">' + p.description + '</td></tr>').join('') +
+          c.props.map(p => '<tr><td style="font-family:var(--mono); font-weight:600;">' + p.name + '</td><td style="font-family:var(--mono); color:var(--muted);">' + p.type + '</td><td style="font-family:var(--mono);">' + p.defaultValue + '</td><td style="color:var(--muted);">' + p.description + '</td></tr>').join('') +
         '</tbody></table>';
       document.getElementById('copyCodeBtn').onclick = function() { copyText(code, this); };
     }
+
+    function renderAll() {
+      renderDeck();
+      renderRail();
+      renderInspector();
+    }
+
     function toggleCmdK() {
       const m = document.getElementById('cmdkModal');
       m.classList.toggle('open');
@@ -455,21 +703,26 @@ export class StudioServer {
         inp.value = ''; inp.focus(); renderCmdK('');
       }
     }
+
     function renderCmdK(q) {
-      const list = COMPONENTS.filter(c => c.name.toLowerCase().includes(q.toLowerCase()) || c.id.includes(q.toLowerCase()));
-      document.getElementById('cmdkResults').innerHTML = list.map(c =>
-        '<button class="comp-item" onclick="selectComponent(\\'' + c.id + '\\'); toggleCmdK();"><span>' + c.name + '</span><span class="tier-tag">' + c.category + '</span></button>'
+      const list = COMPONENTS.map((c, idx) => ({ c, idx }))
+        .filter(x => x.c.name.toLowerCase().includes(q.toLowerCase()) || x.c.id.includes(q.toLowerCase()));
+      document.getElementById('cmdkResults').innerHTML = list.map(x =>
+        '<button class="rail-item" onclick="selectIndex(' + x.idx + '); toggleCmdK();">' +
+          '<span><span class="rail-idx">' + String(x.idx + 1).padStart(2, '0') + '</span>' + x.c.name + '</span>' +
+          '<span class="tech-label">' + x.c.category + '</span>' +
+        '</button>'
       ).join('');
     }
+
     window.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); toggleCmdK(); }
-      if (e.key === 'Escape') document.getElementById('cmdkModal').classList.remove('open');
+      else if (e.key === 'Escape') document.getElementById('cmdkModal').classList.remove('open');
+      else if (e.key === 'ArrowLeft' && document.activeElement.tagName !== 'INPUT') stepDeck(-1);
+      else if (e.key === 'ArrowRight' && document.activeElement.tagName !== 'INPUT') stepDeck(1);
     });
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('themeSelect').innerHTML = THEMES.map(t => '<option value="' + t.id + '">' + t.name + '</option>').join('');
-      renderSidebar();
-      renderInspector();
-    });
+
+    window.addEventListener('DOMContentLoaded', renderAll);
   </script>
 </body>
 </html>`;

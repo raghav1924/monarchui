@@ -26,7 +26,8 @@ test('StudioServer: serves interactive HTML studio and REST registry APIs', asyn
   try {
     const html = await getUrl(`http://localhost:${port}/`);
     assert.strictEqual(html.status, 200);
-    assert.ok(html.body.includes('MonarchUI Studio'));
+    assert.ok(html.body.includes('MonarchUI'));
+    assert.ok(html.body.includes('Technical Blueprint'));
 
     const comps = await getUrl(`http://localhost:${port}/api/components`);
     assert.strictEqual(comps.status, 200);
