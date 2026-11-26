@@ -13,6 +13,8 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
   const [mag, setMag] = useState({ x: 0, y: 0 });
   const [spot, setSpot] = useState({ x: 50, y: 50 });
   const [auroraPos, setAuroraPos] = useState({ x: 50, y: 40 });
+  const [marqueePaused, setMarqueePaused] = useState(false);
+  const [marqueeFast, setMarqueeFast] = useState(false);
 
   React.useEffect(() => {
     if (componentId !== 'spatial-dock') return;
@@ -250,19 +252,69 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
         </div>
       );
 
-    case 'kinetic-marquee':
+    case 'kinetic-marquee': {
+      const row1 = ['NEXT.JS 15', 'TAILWIND CSS', 'THREE.JS', 'TYPESCRIPT', 'VERCEL', 'LINEAR'];
+      const row2 = ['STRIPE', 'RAYCAST', 'FIGMA', 'SUPABASE', 'CLOUDFLARE', 'ANTHROPIC'];
+      const duration = marqueeFast ? '7s' : '16s';
+      const playState = marqueePaused ? 'paused' : 'running';
       return (
-        <div className="flex w-full items-center justify-center gap-3 overflow-hidden py-2">
-          {['NEXT.JS', 'TAILWIND', 'THREE.JS', 'MONARCHUI'].map((item) => (
-            <span
-              key={item}
-              className="border border-neutral-200 bg-white px-3 py-1.5 font-mono text-[11px] font-semibold tracking-widest dark:border-neutral-800 dark:bg-[#111113]"
-            >
-              {item}
+        <div className="w-full space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
+              DUAL-TRACK INFINITE RIBBON · HOVER TO PAUSE
             </span>
-          ))}
+            <div className="flex gap-1.5">
+              <button
+                onClick={() => setMarqueePaused((v) => !v)}
+                className="rounded border border-neutral-200 bg-white px-2 py-0.5 font-mono text-[10px] dark:border-neutral-700 dark:bg-[#111113]"
+              >
+                {marqueePaused ? 'Resume' : 'Pause'}
+              </button>
+              <button
+                onClick={() => setMarqueeFast((v) => !v)}
+                className="rounded border border-neutral-200 bg-white px-2 py-0.5 font-mono text-[10px] dark:border-neutral-700 dark:bg-[#111113]"
+              >
+                {marqueeFast ? '2x Speed' : '1x Speed'}
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="group space-y-2.5 overflow-hidden py-1"
+            style={{ maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)' }}
+          >
+            <div
+              className="animate-marquee-left flex w-max gap-3 group-hover:[animation-play-state:paused]"
+              style={{ animationDuration: duration, animationPlayState: playState }}
+            >
+              {[...row1, ...row1].map((item, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-2 border border-neutral-200 bg-white px-3.5 py-2 font-mono text-[11px] font-semibold tracking-widest dark:border-neutral-800 dark:bg-[#111113]"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-neutral-400" />
+                  {item}
+                </span>
+              ))}
+            </div>
+
+            <div
+              className="animate-marquee-right flex w-max gap-3 group-hover:[animation-play-state:paused]"
+              style={{ animationDuration: duration, animationPlayState: playState }}
+            >
+              {[...row2, ...row2].map((item, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-2 border border-dashed border-neutral-300 bg-neutral-50 px-3.5 py-2 font-mono text-[11px] font-medium tracking-widest text-neutral-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       );
+    }
 
     case 'metric-sparkline':
       return (

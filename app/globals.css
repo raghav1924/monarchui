@@ -46,3 +46,21 @@ body {
   background-position: bottom left, bottom left;
   background-repeat: no-repeat;
 }
+
+@keyframes monarch-marquee-left {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes monarch-marquee-right {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.animate-marquee-left {
+  animation: monarch-marquee-left 18s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: monarch-marquee-right 18s linear infinite;
+}

@@ -536,25 +536,50 @@ export function PricingCrown({ monthlyPrice = 49, annualDiscount = 0.2 }: { mont
     name: 'Infinite Kinetic Marquee Ribbon',
     category: 'Layout',
     tier: 'Signature',
-    tagline: 'Seamless GPU-accelerated infinite ribbon with alpha edge masks.',
-    description: 'Renders duplicated track items with CSS linear-gradient alpha mask fading and instant pause on hover.',
+    tagline: 'Dual-track counter-scrolling partner/tech ribbon with alpha edge masks & hover pause.',
+    description: 'Ideal for "Trusted by teams" or tech-stack showcases. Scrolls two seamless duplicated tracks in opposite directions at 60fps with edge fade masks and pause-on-hover.',
     designPatterns: ['#3 Swiss Design', '#1 Minimalism'],
     filename: 'KineticMarquee.tsx',
     props: [
-      { name: 'items', type: 'string[]', defaultValue: '[]', description: 'List of partner names or badges.' }
+      { name: 'items', type: 'string[]', defaultValue: '[]', description: 'List of partner names or badges.' },
+      { name: 'speedSeconds', type: 'number', defaultValue: '18', description: 'Cycle duration in seconds.' }
     ],
     reactCode: `import React from 'react';
 
-export function KineticMarquee({ items = ['VERCEL', 'LINEAR', 'STRIPE', 'RAYCAST', 'ANTHROPIC', 'FIGMA'] }: { items?: string[] }) {
+export function KineticMarquee({
+  items = ['VERCEL', 'LINEAR', 'STRIPE', 'RAYCAST', 'ANTHROPIC', 'FIGMA'],
+  speedSeconds = 18
+}: {
+  items?: string[];
+  speedSeconds?: number;
+}) {
+  const track = [...items, ...items];
   return (
-    <div className="relative overflow-hidden py-4 [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]">
-      <div className="flex w-max animate-[marquee_20s_linear_infinite] gap-8 hover:[animation-play-state:paused]">
-        {[...items, ...items].map((label, i) => (
-          <span key={i} className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-bold tracking-[0.2em] text-neutral-300">
+    <div className="group space-y-3 overflow-hidden py-4 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+      <div
+        className="flex w-max gap-4 group-hover:[animation-play-state:paused]"
+        style={{ animation: \`marqueeLeft \${speedSeconds}s linear infinite\` }}
+      >
+        {track.map((label, i) => (
+          <span key={i} className="border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 px-4 py-2 font-mono text-xs font-semibold tracking-widest">
             {label}
           </span>
         ))}
       </div>
+      <div
+        className="flex w-max gap-4 group-hover:[animation-play-state:paused]"
+        style={{ animation: \`marqueeRight \${speedSeconds}s linear infinite\` }}
+      >
+        {[...track].reverse().map((label, i) => (
+          <span key={i} className="border border-dashed border-neutral-300 dark:border-neutral-700 px-4 py-2 font-mono text-xs tracking-widest text-neutral-500">
+            {label}
+          </span>
+        ))}
+      </div>
+      <style>{\`
+        @keyframes marqueeLeft { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+        @keyframes marqueeRight { from { transform: translate3d(-50%,0,0); } to { transform: translate3d(0,0,0); } }
+      \`}</style>
     </div>
   );
 }
