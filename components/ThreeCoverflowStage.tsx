@@ -13,11 +13,17 @@ interface ThreeCoverflowStageProps {
   onSelectIndex: (index: number) => void;
 }
 
-function createSlabTexture(comp: MonarchComponent, index: number, dark: boolean): THREE.CanvasTexture {
+function createSlabTexture(
+  comp: MonarchComponent,
+  index: number,
+  dark: boolean,
+  maxAnisotropy: number
+): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
-  canvas.width = 640;
-  canvas.height = 440;
+  canvas.width = 1280;
+  canvas.height = 880;
   const ctx = canvas.getContext('2d')!;
+  ctx.scale(2, 2); // 2x Retina crispness (logical 640x440)
 
   const bg = dark ? '#111113' : '#ffffff';
   const subBg = dark ? '#18181b' : '#f4f4f5';
@@ -164,44 +170,75 @@ function createSlabTexture(comp: MonarchComponent, index: number, dark: boolean)
       break;
     }
     case 'aurora-hero': {
+      const g1 = ctx.createRadialGradient(px + 292, py + 90, 10, px + 292, py + 90, 190);
+      g1.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
+      g1.addColorStop(1, 'transparent');
+      ctx.fillStyle = g1;
+      ctx.fillRect(px, py, pw, ph);
+
       ctx.fillStyle = muted;
-      ctx.font = '600 13px ui-monospace, monospace';
-      ctx.fillText('01 // EDITORIAL HERO', px + 195, py + 62);
+      ctx.font = '600 12px ui-monospace, monospace';
+      ctx.fillText('01 // LIQUID AURORA HERO', px + 190, py + 62);
       ctx.fillStyle = strong;
-      ctx.font = '700 30px -apple-system, sans-serif';
-      ctx.fillText('Crafted with Precision.', px + 128, py + 114);
-      ctx.fillStyle = muted;
-      ctx.fillRect(px + 152, py + 140, 280, 10);
-      ctx.fillRect(px + 192, py + 160, 200, 10);
+      ctx.font = '700 28px -apple-system, sans-serif';
+      ctx.fillText('Crafted for the Extraordinary.', px + 96, py + 112);
+      ctx.fillStyle = strong;
+      ctx.fillRect(px + 216, py + 146, 152, 36);
+      ctx.fillStyle = bg;
+      ctx.font = '600 13px -apple-system, sans-serif';
+      ctx.fillText('Get Started →', px + 244, py + 169);
       break;
     }
     case 'pricing-crown': {
+      // Starter left
       ctx.fillStyle = bg;
-      ctx.fillRect(px + 162, py + 24, 260, 202);
-      ctx.strokeStyle = strong;
-      ctx.strokeRect(px + 162, py + 24, 260, 202);
+      ctx.fillRect(px + 52, py + 30, 224, 190);
+      ctx.strokeStyle = border;
+      ctx.strokeRect(px + 52, py + 30, 224, 190);
       ctx.fillStyle = muted;
-      ctx.font = '600 12px ui-monospace, monospace';
-      ctx.fillText('CROWN TIER // ANNUAL', px + 184, py + 56);
+      ctx.font = '600 11px ui-monospace, monospace';
+      ctx.fillText('STARTER', px + 72, py + 58);
       ctx.fillStyle = strong;
-      ctx.font = '700 42px ui-monospace, monospace';
-      ctx.fillText('$39/mo', px + 184, py + 112);
+      ctx.font = '700 34px ui-monospace, monospace';
+      ctx.fillText('$15/mo', px + 72, py + 106);
+      // Crown right
+      ctx.fillStyle = bg;
+      ctx.fillRect(px + 302, py + 30, 230, 190);
+      ctx.strokeStyle = strong;
+      ctx.strokeRect(px + 302, py + 30, 230, 190);
+      ctx.fillStyle = strong;
+      ctx.font = '600 11px ui-monospace, monospace';
+      ctx.fillText('CROWN TIER · POPULAR', px + 322, py + 58);
+      ctx.font = '700 34px ui-monospace, monospace';
+      ctx.fillText('$39/mo', px + 322, py + 106);
       ctx.fillStyle = muted;
-      ctx.font = '500 14px -apple-system, sans-serif';
-      ctx.fillText('✓ All 12 UI Primitives', px + 184, py + 154);
-      ctx.fillText('✓ Zero Runtime Deps', px + 184, py + 180);
+      ctx.font = '500 13px -apple-system, sans-serif';
+      ctx.fillText('✓ All 12 Royal Primitives', px + 322, py + 148);
+      ctx.fillText('✓ Zero Runtime Deps', px + 322, py + 174);
       break;
     }
     case 'kinetic-marquee': {
       ['NEXT.JS', 'TAILWIND', 'THREE.JS', 'MONARCH'].forEach((lbl, li) => {
         const bx = px + 26 + li * 136;
         ctx.fillStyle = bg;
-        ctx.fillRect(bx, py + 98, 120, 48);
+        ctx.fillRect(bx, py + 54, 120, 48);
         ctx.strokeStyle = strong;
-        ctx.strokeRect(bx, py + 98, 120, 48);
+        ctx.strokeRect(bx, py + 54, 120, 48);
         ctx.fillStyle = strong;
         ctx.font = '700 13px ui-monospace, monospace';
-        ctx.fillText(lbl, bx + 24, py + 127);
+        ctx.fillText(lbl, bx + 22, py + 83);
+      });
+      ['STRIPE', 'LINEAR', 'VERCEL', 'RAYCAST'].forEach((lbl, li) => {
+        const bx = px + 26 + li * 136;
+        ctx.fillStyle = bg;
+        ctx.fillRect(bx, py + 132, 120, 48);
+        ctx.strokeStyle = border;
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(bx, py + 132, 120, 48);
+        ctx.setLineDash([]);
+        ctx.fillStyle = muted;
+        ctx.font = '600 13px ui-monospace, monospace';
+        ctx.fillText(lbl, bx + 26, py + 161);
       });
       break;
     }
@@ -274,7 +311,10 @@ function createSlabTexture(comp: MonarchComponent, index: number, dark: boolean)
   ctx.textAlign = 'left';
 
   const texture = new THREE.CanvasTexture(canvas);
-  texture.anisotropy = 4;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = maxAnisotropy;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
   return texture;
 }
@@ -327,13 +367,13 @@ export function ThreeCoverflowStage({
     const planeGeo = new THREE.BoxGeometry(2.55, 1.75, 0.05);
     const edgesGeo = new THREE.EdgesGeometry(planeGeo);
 
+    const maxAnisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy() || 4);
     components.forEach((comp, i) => {
       const group = new THREE.Group();
-      const texture = createSlabTexture(comp, i, darkMode);
+      const texture = createSlabTexture(comp, i, darkMode, maxAnisotropy);
       const fillMat = new THREE.MeshBasicMaterial({
         map: texture,
-        transparent: true,
-        opacity: 0.96
+        transparent: false
       });
       const mesh = new THREE.Mesh(planeGeo, fillMat);
 
@@ -423,7 +463,7 @@ export function ThreeCoverflowStage({
               ? 0x3f3f46
               : 0xd4d4d8
         );
-        s.fillMat.opacity = abs > 3 ? 0 : isActive ? 1 : 0.72;
+        s.group.visible = abs <= 3;
       });
 
       camera.position.x += (pointerX * 0.45 - camera.position.x) * 0.08;

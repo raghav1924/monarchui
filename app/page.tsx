@@ -164,7 +164,10 @@ export default function MonarchHomePage() {
           darkMode={darkMode}
           autoOrbit={autoOrbit}
           slabSpread={slabSpread}
-          onSelectIndex={setActiveIdx}
+          onSelectIndex={(idx) => {
+            setActiveIdx(idx);
+            document.getElementById('registry')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}
         />
 
         <div className="mt-3 flex items-center justify-between">
