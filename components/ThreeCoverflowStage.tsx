@@ -11,6 +11,7 @@ interface ThreeCoverflowStageProps {
   autoOrbit?: boolean;
   slabSpread?: number;
   onSelectIndex: (index: number) => void;
+  onInspectIndex?: (index: number) => void;
 }
 
 function createSlabTexture(
@@ -325,7 +326,8 @@ export function ThreeCoverflowStage({
   darkMode,
   autoOrbit = false,
   slabSpread = 2.25,
-  onSelectIndex
+  onSelectIndex,
+  onInspectIndex
 }: ThreeCoverflowStageProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(activeIndex);
@@ -334,6 +336,10 @@ export function ThreeCoverflowStage({
   orbitRef.current = autoOrbit;
   const spreadRef = useRef(slabSpread);
   spreadRef.current = slabSpread;
+  const onSelectRef = useRef(onSelectIndex);
+  onSelectRef.current = onSelectIndex;
+  const onInspectRef = useRef(onInspectIndex);
+  onInspectRef.current = onInspectIndex;
 
   useEffect(() => {
     const container = mountRef.current;
@@ -411,7 +417,13 @@ export function ThreeCoverflowStage({
       );
       if (hits.length > 0 && hits[0].object.parent) {
         const idx = hits[0].object.parent.userData.index;
-        if (typeof idx === 'number') onSelectIndex(idx);
+        if (typeof idx === 'number') {
+          if (idx === activeRef.current) {
+            onInspectRef.current?.(idx);
+          } else {
+            onSelectRef.current(idx);
+          }
+        }
       }
     };
 
@@ -487,7 +499,7 @@ export function ThreeCoverflowStage({
       });
       renderer.dispose();
     };
-  }, [components, darkMode, onSelectIndex]);
+  }, [components, darkMode]);
 
   return (
     <div

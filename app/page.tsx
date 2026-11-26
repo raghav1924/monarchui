@@ -164,8 +164,8 @@ export default function MonarchHomePage() {
           darkMode={darkMode}
           autoOrbit={autoOrbit}
           slabSpread={slabSpread}
-          onSelectIndex={(idx) => {
-            setActiveIdx(idx);
+          onSelectIndex={setActiveIdx}
+          onInspectIndex={() => {
             document.getElementById('registry')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }}
         />
