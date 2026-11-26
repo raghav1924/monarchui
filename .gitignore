@@ -1,8 +1,12 @@
 node_modules/
 .next/
+.netlify/
 out/
 dist/
 .DS_Store
 *.log
+.env*
 components/monarch/
+components/rjui/
 next-env.d.ts
+tsconfig.tsbuildinfo
