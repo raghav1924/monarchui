@@ -5,9 +5,9 @@ interface RJLogoProps {
 }
 
 /**
- * Luxury obsidian & champagne-gold RenderJet (RJ) architectural monogram designed in Figma (node 3:2).
+ * Monochrome R+J negative-space sculptural mark designed in Figma (RenderJet — Final Identity).
  */
-export function RJLogo({ className = 'h-8 w-8' }: RJLogoProps) {
+export function RJLogo({ className = 'h-7 w-7' }: RJLogoProps) {
   return (
     <svg
       viewBox="0 0 128 128"
@@ -16,42 +16,16 @@ export function RJLogo({ className = 'h-8 w-8' }: RJLogoProps) {
       className={className}
       aria-hidden="true"
     >
-      <rect x="0.75" y="0.75" width="126.5" height="126.5" rx="29.25" fill="url(#rj_bg)" />
-      <rect
-        x="0.75"
-        y="0.75"
-        width="126.5"
-        height="126.5"
-        rx="29.25"
-        stroke="url(#rj_border)"
-        strokeWidth="1.5"
+      <path
+        d="M22 20H74C96.0914 20 110 32.8 110 51.5C110 66.2 100.8 76.8 84.5 80.5L46 42V86L22 108V20ZM46 39V63L72 63C82 63 87 58.5 87 51C87 43.5 82 39 72 39H46Z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        fill="currentColor"
       />
       <path
-        d="M30 94V34H58C71.5 34 80 41.5 80 53C80 63.5 72.5 70.5 60.5 71.5L80 94"
-        strokeWidth="10.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        stroke="#FAFAFA"
+        d="M58 64L108 108H76C54 108 42 97 38 84L54 69C57.5 81 64.5 87 76 87H83L58 64Z"
+        fill="currentColor"
       />
-      <path
-        d="M96 34V77C96 89.5 88.5 96 76 96C70.5 96 66 94.2 63 91"
-        strokeWidth="10.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        stroke="#E5C158"
-      />
-      <circle cx="96" cy="34" r="5.25" fill="#E5C158" />
-      <defs>
-        <linearGradient id="rj_bg" x1="1.34" y1="-2.19" x2="110.92" y2="64.84" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#1C1C21" />
-          <stop offset="1" stopColor="#08080A" />
-        </linearGradient>
-        <linearGradient id="rj_border" x1="0" y1="64" x2="128" y2="64" gradientUnits="userSpaceOnUse">
-          <stop stopColor="white" stopOpacity="0.28" />
-          <stop offset="0.5" stopColor="#E5C158" stopOpacity="0.45" />
-          <stop offset="1" stopColor="white" stopOpacity="0.08" />
-        </linearGradient>
-      </defs>
     </svg>
   );
 }

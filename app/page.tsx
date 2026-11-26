@@ -126,11 +126,10 @@ export default function MonarchHomePage() {
       <header className="relative flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 bg-white/80 px-6 py-3.5 backdrop-blur-sm dark:border-neutral-800 dark:bg-[#09090B]/90">
         <CrosshairCorners />
 
-        <a href="#" className="flex items-center gap-2.5">
-          <RJLogo className="h-8 w-8 shadow-sm" />
-          <span className="text-sm tracking-tight text-neutral-600 dark:text-neutral-300">
-            <strong className="font-bold text-neutral-950 dark:text-white">R</strong>ender
-            <strong className="font-bold text-neutral-950 dark:text-white">J</strong>et
+        <a href="#" className="flex items-center gap-2">
+          <RJLogo className="h-6 w-6 text-neutral-950 dark:text-white" />
+          <span className="text-[15px] font-semibold tracking-tight text-neutral-950 dark:text-white">
+            RenderJet
           </span>
           <span className="rounded-full border border-neutral-200 px-2 py-0.5 font-mono text-[10px] tracking-wider text-neutral-500 uppercase dark:border-neutral-800">
             RJ · v1.0.0
