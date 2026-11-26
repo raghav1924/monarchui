@@ -48,7 +48,7 @@ export default function AppDock() {
 export default function ShowcaseCard() {
   return (
     <KineticCard3D maxTiltDeg={12}>
-      <h3 className="text-lg font-semibold text-white">R·J Black Edition</h3>
+      <h3 className="text-lg font-semibold text-white">Royal Junction Edition</h3>
       <p className="mt-2 text-sm text-neutral-400">Move your cursor to tilt in 3D space.</p>
     </KineticCard3D>
   );
@@ -132,7 +132,7 @@ export default function BeforeAfter() {
   return (
     <SplitCompare
       beforeLabel="Standard UI"
-      afterLabel="R·J UI"
+      afterLabel="Royal Junction"
     />
   );
 }`,

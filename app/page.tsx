@@ -9,8 +9,8 @@ import { getComponentUsage } from '@/src/registry/usage';
 
 const FAQS = [
   {
-    q: 'What is R·J UI?',
-    a: 'R·J UI is a zero-dependency registry of 12 luxury-grade React, Tailwind CSS, and Vanilla HTML/CSS primitives paired with an interactive Three.js spatial Cover Flow studio.'
+    q: 'What is Royal Junction?',
+    a: 'Royal Junction (RJ) is a zero-dependency registry of 12 luxury-grade React, Tailwind CSS, and Vanilla HTML/CSS primitives paired with an interactive Three.js spatial Cover Flow studio.'
   },
   {
     q: 'How do I add a component to my project?',
@@ -25,8 +25,8 @@ const FAQS = [
     a: 'Yes. Motion relies on GPU-composited transforms, opacity, and requestAnimationFrame interpolation with zero layout shifts and full keyboard navigation.'
   },
   {
-    q: 'Is R·J UI free to use?',
-    a: 'Yes. R·J UI is MIT-licensed and free for personal and commercial projects.'
+    q: 'Is Royal Junction free to use?',
+    a: 'Yes. Royal Junction is MIT-licensed and free for personal and commercial projects.'
   }
 ];
 
@@ -113,7 +113,7 @@ export default function MonarchHomePage() {
           className="inline-flex items-center gap-1.5 transition-colors hover:text-neutral-950 dark:hover:text-white"
         >
           <span>
-            <strong className="font-semibold text-neutral-950 dark:text-white">R·J</strong> UI v1.0 — 12 zero-dependency spatial primitives for{' '}
+            <strong className="font-semibold text-neutral-950 dark:text-white">Royal Junction</strong> (RJ) v1.0 — 12 zero-dependency spatial primitives for{' '}
             <strong className="font-medium text-neutral-900 dark:text-neutral-100">
               React, Tailwind &amp; Three.js
             </strong>
@@ -130,11 +130,12 @@ export default function MonarchHomePage() {
           <span className="grid h-7 w-7 place-items-center rounded-lg bg-neutral-950 text-white dark:bg-white dark:text-neutral-950">
             <RJLogo className="h-4 w-4" />
           </span>
-          <span className="text-sm font-bold tracking-tight">
-            R·J <span className="font-medium text-neutral-500 dark:text-neutral-400">UI</span>
+          <span className="text-sm tracking-tight text-neutral-600 dark:text-neutral-300">
+            <strong className="font-bold text-neutral-950 dark:text-white">R</strong>oyal{' '}
+            <strong className="font-bold text-neutral-950 dark:text-white">J</strong>unction
           </span>
           <span className="rounded-full border border-neutral-200 px-2 py-0.5 font-mono text-[10px] tracking-wider text-neutral-500 uppercase dark:border-neutral-800">
-            v1.0.0
+            RJ · v1.0.0
           </span>
         </a>
 
@@ -594,7 +595,7 @@ export default function MonarchHomePage() {
             Frequently asked questions
           </h2>
           <p className="mt-1.5 text-sm text-neutral-500 dark:text-neutral-400">
-            Everything about using R·J UI primitives in your project.
+            Everything about using Royal Junction primitives in your project.
           </p>
         </div>
 
@@ -626,7 +627,7 @@ export default function MonarchHomePage() {
       <div className="ruler-ticks border-t border-neutral-200 dark:border-neutral-800" />
 
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-200 bg-white px-6 py-5 font-mono text-[11px] tracking-widest text-neutral-500 uppercase dark:border-neutral-800 dark:bg-[#09090B]">
-        <span>R·J UI // NEXT.JS + TAILWIND + THREE.JS</span>
+        <span>ROYAL JUNCTION (RJ) // NEXT.JS + TAILWIND + THREE.JS</span>
         <span>
           MIT LICENSE ·{' '}
           <a

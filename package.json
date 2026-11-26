@@ -1,7 +1,7 @@
 {
-  "name": "rjui",
+  "name": "royal-junction-ui",
   "version": "1.0.0",
-  "description": "R·J UI — Technical Blueprint UI Component Registry & Three.js Spatial Studio built with Next.js, Tailwind CSS, and Three.js",
+  "description": "Royal Junction (RJ) — Technical Blueprint UI Component Registry & Three.js Spatial Studio built with Next.js, Tailwind CSS, and Three.js",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
