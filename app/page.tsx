@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { LiveComponentPreview } from '@/components/LiveComponentPreview';
+import { MonarchLogo } from '@/components/MonarchLogo';
 import { ThreeCoverflowStage } from '@/components/ThreeCoverflowStage';
 import { MONARCH_COMPONENTS } from '@/src/registry/components';
 import { getComponentUsage } from '@/src/registry/usage';
@@ -131,21 +132,11 @@ export default function MonarchHomePage() {
         <header className="relative flex items-center justify-between border-b border-dashed border-neutral-200 px-6 py-4 dark:border-neutral-800">
           <CrosshairCorners />
 
-          {/* Left: Geometric Monarch Mark + Wordmark */}
+          {/* Left: Figma Monarch M-Crown Logo + Wordmark */}
           <a href="#" className="flex items-center gap-2.5">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-neutral-950 dark:text-white"
-              aria-hidden="true"
-            >
-              <rect x="6" y="4" width="12" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
-              <path d="M3 7.5V16.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              <path d="M21 7.5V16.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            </svg>
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-neutral-950 text-white dark:bg-white dark:text-neutral-950">
+              <MonarchLogo className="h-4 w-4" />
+            </span>
             <span className="text-[15px] font-semibold tracking-tight">Monarch UI</span>
           </a>
 
