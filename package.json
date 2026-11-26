@@ -1,0 +1,33 @@
+{
+  "name": "monarchui",
+  "version": "1.0.0",
+  "description": "Royal-Grade Spatial, Bento & Glassmorphic UI Component Registry, Interactive Playground & CLI Installer for React, Next.js & Tailwind CSS",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "monarchui": "bin/monarchui.js"
+  },
+  "scripts": {
+    "build": "node /Users/jatinsharma/.local/bin/lib/node_modules/typescript/bin/tsc",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "start": "node dist/cli.js studio"
+  },
+  "keywords": [
+    "ui-components",
+    "design-system",
+    "bento-grid",
+    "glassmorphism",
+    "apple-ui",
+    "tailwind",
+    "react",
+    "nextjs",
+    "spatial-ui",
+    "cli"
+  ],
+  "author": "Jatin Sharma <raghavjatin245@gmail.com> (https://jatinsh.netlify.app/)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
