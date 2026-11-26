@@ -412,32 +412,68 @@ export function DynamicIsland({ title = 'Deployment Live', detail = 'Edge CDN sy
     name: 'Liquid Aurora Editorial Hero',
     category: 'Typography',
     tier: 'Royal',
-    tagline: 'Organic multi-layered aurora backdrop with luxury editorial typography.',
-    description: 'Pairs diffused radial aurora gradients with tight-tracked Apple/Editorial headline lockups.',
+    tagline: 'Pointer-reactive liquid aurora light field with editorial headline & blueprint grid.',
+    description: 'A flagship landing-page Hero Section combining a cursor-tracking multi-layer liquid aurora mesh, subtle architectural grid overlay, gradient headline lockup, and CTA controls.',
     designPatterns: ['#15 Luxury Typography', '#18 Ethereal', '#16 Editorial Design'],
     filename: 'AuroraHero.tsx',
     props: [
       { name: 'headline', type: 'string', defaultValue: '"Crafted for the Extraordinary."', description: 'Hero display heading.' },
-      { name: 'subtitle', type: 'string', defaultValue: '""', description: 'Supporting lead paragraph.' }
+      { name: 'subtitle', type: 'string', defaultValue: '""', description: 'Supporting lead paragraph.' },
+      { name: 'ctaLabel', type: 'string', defaultValue: '"Get Started"', description: 'Primary action button label.' }
     ],
-    reactCode: `import React from 'react';
+    reactCode: `import React, { useState } from 'react';
 
 export function AuroraHero({
   headline = 'Crafted for the Extraordinary.',
-  subtitle = 'Zero-dependency spatial primitives engineered with Apple-grade motion and Swiss precision.'
+  subtitle = 'Pointer-reactive liquid aurora light field layered over crisp editorial typography.',
+  ctaLabel = 'Get Started'
 }: {
   headline?: string;
   subtitle?: string;
+  ctaLabel?: string;
 }) {
+  const [pos, setPos] = useState({ x: 50, y: 40 });
+
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 px-8 py-16 text-center">
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-amber-400/15 blur-[110px]" />
-      <div className="pointer-events-none absolute -bottom-24 right-1/4 h-64 w-96 rounded-full bg-sky-400/10 blur-[100px]" />
-      <p className="relative z-10 mb-3 text-xs font-semibold tracking-[0.22em] text-amber-300 uppercase">MonarchUI Design System</p>
-      <h1 className="relative z-10 mx-auto max-w-2xl bg-gradient-to-b from-white via-white to-neutral-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
-        {headline}
-      </h1>
-      <p className="relative z-10 mx-auto mt-4 max-w-xl text-sm leading-relaxed text-neutral-400">{subtitle}</p>
+    <section
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        setPos({
+          x: ((e.clientX - r.left) / r.width) * 100,
+          y: ((e.clientY - r.top) / r.height) * 100
+        });
+      }}
+      className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#09090B] px-8 py-16 text-center text-white"
+    >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-80 transition-all duration-300 ease-out"
+        style={{
+          backgroundImage: \`
+            radial-gradient(360px circle at \${pos.x}% \${pos.y}%, rgba(56, 189, 248, 0.3), transparent 60%),
+            radial-gradient(400px circle at \${100 - pos.x}% \${100 - pos.y}%, rgba(168, 85, 247, 0.25), transparent 65%),
+            radial-gradient(280px circle at 50% 0%, rgba(16, 185, 129, 0.2), transparent 60%)
+          \`
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.12) 1px, transparent 1px)',
+          backgroundSize: '32px 32px'
+        }}
+      />
+      <div className="relative z-10">
+        <span className="inline-block rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-[11px] tracking-widest text-sky-300 uppercase">
+          MonarchUI Editorial Hero
+        </span>
+        <h1 className="mx-auto mt-4 max-w-2xl bg-gradient-to-b from-white via-white to-neutral-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent md:text-5xl">
+          {headline}
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-neutral-400">{subtitle}</p>
+        <div className="mt-6 flex justify-center gap-3">
+          <button className="rounded-md bg-white px-5 py-2.5 text-xs font-semibold text-neutral-950">{ctaLabel} &rarr;</button>
+        </div>
+      </div>
     </section>
   );
 }

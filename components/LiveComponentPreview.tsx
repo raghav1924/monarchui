@@ -12,6 +12,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
   const [mag, setMag] = useState({ x: 0, y: 0 });
   const [spot, setSpot] = useState({ x: 50, y: 50 });
+  const [auroraPos, setAuroraPos] = useState({ x: 50, y: 40 });
 
   React.useEffect(() => {
     if (componentId !== 'spatial-dock') return;
@@ -180,10 +181,56 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
 
     case 'aurora-hero':
       return (
-        <div className="w-full border border-neutral-200 bg-white p-6 text-center dark:border-neutral-800 dark:bg-[#111113]">
-          <div className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">EDITORIAL HERO</div>
-          <div className="mt-2 text-2xl font-semibold tracking-tight">Crafted for the Extraordinary.</div>
-          <div className="mt-1.5 text-xs text-neutral-500">Strict geometric typography &amp; hairline rhythm.</div>
+        <div
+          onMouseMove={(e) => {
+            const r = e.currentTarget.getBoundingClientRect();
+            setAuroraPos({
+              x: ((e.clientX - r.left) / r.width) * 100,
+              y: ((e.clientY - r.top) / r.height) * 100
+            });
+          }}
+          className="relative w-full overflow-hidden border border-neutral-200 bg-[#09090B] px-6 py-10 text-center text-white dark:border-neutral-800"
+        >
+          {/* Animated / Pointer-Reactive Liquid Aurora Layers */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-80 transition-all duration-300 ease-out"
+            style={{
+              backgroundImage: `
+                radial-gradient(280px circle at ${auroraPos.x}% ${auroraPos.y}%, rgba(56, 189, 248, 0.32), transparent 60%),
+                radial-gradient(320px circle at ${100 - auroraPos.x}% ${100 - auroraPos.y}%, rgba(168, 85, 247, 0.28), transparent 65%),
+                radial-gradient(240px circle at 50% 0%, rgba(16, 185, 129, 0.22), transparent 60%)
+              `
+            }}
+          />
+          {/* Subtle Architectural Grid Overlay */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-20"
+            style={{
+              backgroundImage:
+                'linear-gradient(to right, rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.12) 1px, transparent 1px)',
+              backgroundSize: '28px 28px'
+            }}
+          />
+          <div className="relative z-10">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-[10px] tracking-widest text-sky-300 uppercase backdrop-blur-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              Editorial Hero · Move Cursor
+            </span>
+            <h3 className="mx-auto mt-3 max-w-md bg-gradient-to-b from-white via-white to-neutral-400 bg-clip-text text-2xl font-semibold tracking-tight text-transparent md:text-3xl">
+              Crafted for the Extraordinary.
+            </h3>
+            <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-neutral-400">
+              Pointer-reactive liquid aurora light field layered over a crisp architectural grid.
+            </p>
+            <div className="mt-4 flex justify-center gap-2">
+              <span className="rounded-md bg-white px-3.5 py-1.5 text-[11px] font-semibold text-neutral-950">
+                Get Started →
+              </span>
+              <span className="rounded-md border border-white/20 bg-white/5 px-3.5 py-1.5 font-mono text-[11px] text-neutral-300">
+                x:{auroraPos.x.toFixed(0)}% y:{auroraPos.y.toFixed(0)}%
+              </span>
+            </div>
+          </div>
         </div>
       );
 
