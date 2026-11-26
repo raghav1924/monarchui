@@ -12,40 +12,125 @@
 
 ---
 
+## Screenshots
+
+| Three.js Spatial Cover Flow Stage | Live Interactive Preview & Code Studio |
+| :---: | :---: |
+| ![Three.js Spatial Cover Flow Stage](./public/screenshots/spatial-stage.jpg) | ![Live Interactive Preview & Code Studio](./public/screenshots/live-preview.jpg) |
+
+| RenderJet — Final Identity System (Figma) |
+| :---: |
+| ![RenderJet Final Identity System](./public/screenshots/brand-identity.png) |
+
+---
+
 ## Why RenderJet?
 
 Most UI libraries look generic. **RenderJet** brings **Apple.com spatial precision**, **Bento asymmetric layouts**, **Linear/Raycast Cmd+K ergonomics**, and **architectural Three.js motion** directly into your codebase with **zero external runtime dependencies**.
 
 - **Copy-Paste or CLI Install:** Own every line of code. Drop clean React + Tailwind `.tsx` files or Vanilla HTML/CSS/JS directly into `./components/rjui/`.
-- **Interactive Luxury Studio (`Port 7272`):** Test 3D perspective tilt, cursor-tracked spotlight borders, spring dock magnification, Dynamic Island morphing, and 4 instant theme presets live in your browser.
-- **12 Flagship Primitives:** Not bloated with 200 basic buttons—12 signature, high-impact hero, navigation, spatial, and conversion components.
+- **Interactive Studio (`Port 7272`):** Browse all 12 primitives on a Three.js Cover Flow stage with an Auto-Demo virtual cursor, live interactive previews, and instant code inspection.
+- **12 Flagship Primitives:** Focused, high-impact hero, navigation, spatial, feedback, and conversion components.
 
 ---
 
-## Quickstart
+## Installation & Running Locally
+
+### 1. Clone & Install
 
 ```bash
-# Clone and build
-git clone https://github.com/raghav1924/monarchui.git
-cd monarchui
+git clone https://github.com/raghav1924/renderjet.git
+cd renderjet
+npm install
+```
+
+### 2. Run the Next.js Interactive Studio
+
+```bash
+npm run dev
+```
+
+Open **[http://localhost:7272](http://localhost:7272)** in your browser.
+
+### 3. Build & Run Tests
+
+```bash
+# Type-check Next.js app
+./node_modules/.bin/tsc --noEmit
+
+# Build CLI & run test suite
+npm test
+
+# Production Next.js build
 npm run build
-
-# Launch the Interactive Luxury Studio on http://localhost:7272
-./bin/monarchui.js studio
-
-# Initialize Royal Obsidian & Champagne theme tokens in your project
-./bin/monarchui.js init --theme royal-obsidian
-
-# Install a React + Tailwind component
-./bin/monarchui.js add spotlight-bento
-
-# Or install Vanilla HTML/CSS/JS
-./bin/monarchui.js add spatial-dock --vanilla
+npm start
 ```
 
 ---
 
-## The 12 Royal & Spatial Components
+## How to Use It
+
+### CLI Usage (`rjui`)
+
+```bash
+# List all 12 components
+npx rjui list
+
+# Initialize theme tokens (rjui-tokens.css & rjui.tailwind.ts)
+npx rjui init --theme royal-obsidian
+
+# Install a React + Tailwind component into ./components/rjui/
+npx rjui add spotlight-bento
+
+# Or install Vanilla HTML/CSS/JS
+npx rjui add spatial-dock --vanilla
+
+# Install all 12 components at once
+npx rjui add all
+
+# Launch the standalone Studio server on port 7272
+npx rjui studio
+```
+
+### React Usage Example
+
+After running `npx rjui add spotlight-bento`, import and render the component directly:
+
+```tsx
+import { SpotlightBento } from '@/components/rjui/SpotlightBento';
+
+export default function FeaturesSection() {
+  return (
+    <SpotlightBento
+      spotlightColor="rgba(229, 193, 88, 0.22)"
+      items={[
+        {
+          title: 'Zero-Dependency Core',
+          description: 'Clean TypeScript primitives you own in your repo.',
+          badge: 'Architecture',
+          colSpan: 'md:col-span-8'
+        },
+        {
+          title: '60fps Physics',
+          description: 'GPU-accelerated pointer transforms.',
+          badge: 'Motion',
+          colSpan: 'md:col-span-4'
+        }
+      ]}
+    />
+  );
+}
+```
+
+### Keyboard Shortcuts in the Studio
+
+- `←` / `→` — Step through the 12 components in the 3D Cover Flow stage
+- `⌘K` / `Ctrl+K` — Open the quick-jump search palette
+- **Horizontal Scroll / Click** — Focus any 3D slab or click the active slab to inspect its code & props
+
+---
+
+## The 12 Spatial & Architectural Components
 
 | ID | Component | Tier | Category | Design Highlights |
 |---|---|---|---|---|
@@ -64,7 +149,7 @@ npm run build
 
 ---
 
-## 4 Built-In Luxury Themes
+## 4 Built-In Themes
 
 - `royal-obsidian` — **Royal Obsidian & Champagne** (`#050507` + `#e5c158`)
 - `apple-frost` — **Apple Spatial Frost** (`#f5f5f7` + `#0071e3`)
@@ -76,4 +161,4 @@ npm run build
 ## License
 
 MIT License. Crafted by **[Jatin Sharma](https://jatinsh.netlify.app/)**.  
-If MonarchUI elevates your frontend, **star ⭐ and fork 🍴 the repository**!
+If **RenderJet** elevates your frontend, **star ⭐ and fork 🍴 the repository**!
