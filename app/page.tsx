@@ -12,7 +12,9 @@ export default function MonarchHomePage() {
   const [darkMode, setDarkMode] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [splitPos, setSplitPos] = useState(50);
+  const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
+  const [autoOrbit, setAutoOrbit] = useState(false);
+  const [slabSpread, setSlabSpread] = useState(2.25);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const active = MONARCH_COMPONENTS[activeIdx];
@@ -160,6 +162,8 @@ export default function MonarchHomePage() {
           components={MONARCH_COMPONENTS}
           activeIndex={activeIdx}
           darkMode={darkMode}
+          autoOrbit={autoOrbit}
+          slabSpread={slabSpread}
           onSelectIndex={setActiveIdx}
         />
 
@@ -182,66 +186,102 @@ export default function MonarchHomePage() {
         </div>
       </section>
 
-      {/* 3-Column Telemetry & Interactive Controls Row */}
+      {/* 3-Column Interactive Studio Controls & Token Exporter */}
       <section className="relative grid grid-cols-1 divide-y divide-neutral-200 border-b border-neutral-200 md:grid-cols-3 md:divide-x md:divide-y-0 dark:divide-neutral-800 dark:border-neutral-800">
         <span className="pointer-events-none absolute -bottom-[6px] -left-[5px] font-mono text-[11px] text-neutral-400">+</span>
         <span className="pointer-events-none absolute -bottom-[6px] -right-[5px] font-mono text-[11px] text-neutral-400">+</span>
 
+        {/* 03 // CATEGORY_FILTER */}
         <div className="p-6">
-          <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">03 // TELEMETRY</div>
-          <div className="mt-3 grid grid-cols-2 divide-x divide-y divide-neutral-200 border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
-            <div className="p-3">
-              <div className="font-mono text-[10px] text-neutral-500 uppercase">PRIMITIVES</div>
-              <div className="mt-1 font-mono text-xl font-semibold">12</div>
-            </div>
-            <div className="p-3">
-              <div className="font-mono text-[10px] text-neutral-500 uppercase">ENGINE</div>
-              <div className="mt-1 font-mono text-xl font-semibold">3D</div>
-            </div>
-            <div className="p-3">
-              <div className="font-mono text-[10px] text-neutral-500 uppercase">RUNTIME DEPS</div>
-              <div className="mt-1 font-mono text-xl font-semibold">0</div>
-            </div>
-            <div className="p-3">
-              <div className="font-mono text-[10px] text-neutral-500 uppercase">SHADOWS</div>
-              <div className="mt-1 font-mono text-xl font-semibold">0px</div>
-            </div>
+          <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
+            03 // CATEGORY_FILTER
+          </div>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {['ALL', 'Layout', 'Spatial', 'Navigation', 'Conversion', 'Feedback', 'Typography'].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => {
+                  setCategoryFilter(cat);
+                  if (cat !== 'ALL') {
+                    const matchIdx = MONARCH_COMPONENTS.findIndex((c) => c.category === cat);
+                    if (matchIdx !== -1) setActiveIdx(matchIdx);
+                  }
+                }}
+                className={`rounded-md border px-2.5 py-1 font-mono text-[10px] uppercase transition-colors ${
+                  categoryFilter === cat
+                    ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
+                    : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-400'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
 
+        {/* 04 // THREE.JS_CONTROLS */}
         <div className="p-6">
-          <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">04 // SPLIT_COMPARE</div>
-          <div className="relative mt-3 flex h-24 select-none items-center justify-end border border-neutral-200 bg-white px-4 font-mono text-xs dark:border-neutral-800 dark:bg-[#111113]">
-            <span>MONARCH</span>
-            <div
-              style={{ width: `${splitPos}%` }}
-              className="absolute inset-y-0 left-0 flex items-center overflow-hidden border-r border-neutral-900 bg-neutral-100 pl-4 text-neutral-500 dark:border-white dark:bg-neutral-800/70"
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
+              04 // STAGE_CONTROLS
+            </span>
+            <button
+              onClick={() => setAutoOrbit((v) => !v)}
+              className={`rounded border px-2 py-0.5 font-mono text-[10px] ${
+                autoOrbit
+                  ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
+                  : 'border-neutral-200 bg-white text-neutral-500 dark:border-neutral-800 dark:bg-[#111113]'
+              }`}
             >
-              RAW
+              {autoOrbit ? 'Orbit: ON' : 'Orbit: OFF'}
+            </button>
+          </div>
+          <div className="mt-4 space-y-2">
+            <div className="flex justify-between font-mono text-[10px] text-neutral-500">
+              <span>SLAB SPACING</span>
+              <span>{slabSpread.toFixed(2)}u</span>
             </div>
             <input
               type="range"
-              min={10}
-              max={90}
-              value={splitPos}
-              onChange={(e) => setSplitPos(Number(e.target.value))}
-              className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+              min={1.4}
+              max={3.0}
+              step={0.05}
+              value={slabSpread}
+              onChange={(e) => setSlabSpread(Number(e.target.value))}
+              className="w-full accent-neutral-900 dark:accent-white"
             />
           </div>
         </div>
 
+        {/* 05 // EXPORT_TOKENS */}
         <div className="flex flex-col justify-between p-6">
           <div>
-            <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">05 // ACTIVE_SPEC</div>
-            <div className="mt-3 text-base font-semibold tracking-tight">{active.name}</div>
-            <div className="mt-1 font-mono text-xs text-neutral-500">{active.filename}</div>
+            <div className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
+              05 // EXPORT_TOKENS ({darkMode ? 'DARK' : 'LIGHT'})
+            </div>
+            <p className="mt-2 text-xs text-neutral-500">
+              Copy the exact monochrome CSS variables or initialize them via CLI.
+            </p>
           </div>
-          <button
-            onClick={() => document.getElementById('registry')?.scrollIntoView({ behavior: 'smooth' })}
-            className="mt-4 w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs font-medium hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
-          >
-            Inspect Source &amp; Props ↓
-          </button>
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() =>
+                copyText(
+                  `:root { --bg: ${darkMode ? '#09090B' : '#FAFAFA'}; --surface: ${darkMode ? '#111113' : '#FFFFFF'}; --border: ${darkMode ? '#27272A' : '#E4E4E7'}; }`,
+                  'copy-css-vars'
+                )
+              }
+              className="flex-1 rounded-md border border-neutral-200 bg-white px-3 py-1.5 font-mono text-[11px] hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+            >
+              {copiedId === 'copy-css-vars' ? 'Copied CSS!' : 'Copy CSS Vars'}
+            </button>
+            <button
+              onClick={() => copyText('npx monarchui init', 'copy-init')}
+              className="rounded-md border border-neutral-200 bg-white px-3 py-1.5 font-mono text-[11px] hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+            >
+              {copiedId === 'copy-init' ? 'Copied!' : 'CLI Init'}
+            </button>
+          </div>
         </div>
       </section>
 

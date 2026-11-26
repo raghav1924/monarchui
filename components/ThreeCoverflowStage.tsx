@@ -8,6 +8,8 @@ interface ThreeCoverflowStageProps {
   components: MonarchComponent[];
   activeIndex: number;
   darkMode: boolean;
+  autoOrbit?: boolean;
+  slabSpread?: number;
   onSelectIndex: (index: number) => void;
 }
 
@@ -281,11 +283,17 @@ export function ThreeCoverflowStage({
   components,
   activeIndex,
   darkMode,
+  autoOrbit = false,
+  slabSpread = 2.25,
   onSelectIndex
 }: ThreeCoverflowStageProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef(activeIndex);
   activeRef.current = activeIndex;
+  const orbitRef = useRef(autoOrbit);
+  orbitRef.current = autoOrbit;
+  const spreadRef = useRef(slabSpread);
+  spreadRef.current = slabSpread;
 
   useEffect(() => {
     const container = mountRef.current;
@@ -381,16 +389,20 @@ export function ThreeCoverflowStage({
     resizeObserver.observe(container);
 
     let rafId = 0;
+    let tickTime = 0;
     const animate = () => {
       rafId = requestAnimationFrame(animate);
+      tickTime += 0.02;
       const curr = activeRef.current;
+      const spread = spreadRef.current;
 
       slabs.forEach((s, i) => {
         const offset = i - curr;
         const abs = Math.abs(offset);
-        const targetX = offset * 2.25;
+        const targetX = offset * spread;
         const targetZ = offset === 0 ? 0.9 : -abs * 0.7;
-        const targetRotY = offset === 0 ? pointerX * 0.3 : Math.sign(offset) * -0.45;
+        const orbitYaw = orbitRef.current && offset === 0 ? Math.sin(tickTime) * 0.28 : 0;
+        const targetRotY = offset === 0 ? pointerX * 0.3 + orbitYaw : Math.sign(offset) * -0.45;
         const targetRotX = offset === 0 ? -pointerY * 0.2 : 0;
         const targetScale = offset === 0 ? 1.18 : Math.max(0.66, 0.88 - abs * 0.08);
 
