@@ -104,7 +104,7 @@ function SpotlightCell({ item, spotlightColor }: { item: BentoItem; spotlightCol
       { name: 'items', type: 'DockItem[]', defaultValue: '[]', description: 'Dock icons, labels, and click callbacks.' },
       { name: 'magnification', type: 'number', defaultValue: '1.45', description: 'Peak scale factor on direct hover.' }
     ],
-    reactCode: `import React, { useState } from 'react';
+    reactCode: `import React, { useRef, useState } from 'react';
 
 export interface DockItem {
   id: string;
@@ -114,24 +114,43 @@ export interface DockItem {
 }
 
 export function SpatialDock({ items, magnification = 1.45 }: { items: DockItem[]; magnification?: number }) {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [mouseX, setMouseX] = useState<number | null>(null);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   return (
-    <div className="inline-flex items-end gap-3 rounded-2xl border border-white/15 bg-black/60 px-4 py-3 shadow-2xl backdrop-blur-2xl">
+    <div
+      onMouseMove={(e) => setMouseX(e.clientX)}
+      onMouseLeave={() => setMouseX(null)}
+      className="inline-flex items-end gap-3 rounded-2xl border border-white/15 bg-black/60 px-4 py-3 backdrop-blur-2xl"
+    >
       {items.map((item, idx) => {
-        const dist = hoveredIdx === null ? 99 : Math.abs(hoveredIdx - idx);
-        const scale = dist === 0 ? magnification : dist === 1 ? 1.2 : 1;
+        let scale = 1;
+        let liftY = 0;
+        const el = itemRefs.current[idx];
+        if (mouseX !== null && el) {
+          const rect = el.getBoundingClientRect();
+          const dist = Math.abs(mouseX - (rect.left + rect.width / 2));
+          if (dist < 115) {
+            const factor = Math.cos((dist / 115) * (Math.PI / 2));
+            scale = 1 + (magnification - 1) * factor;
+            liftY = -10 * factor;
+          }
+        }
         return (
           <button
             key={item.id}
-            onMouseEnter={() => setHoveredIdx(idx)}
-            onMouseLeave={() => setHoveredIdx(null)}
+            ref={(node) => { itemRefs.current[idx] = node; }}
             onClick={item.onClick}
-            style={{ transform: \`scale(\${scale}) translateY(\${dist === 0 ? -8 : dist === 1 ? -3 : 0}px)\` }}
-            className="group relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white transition-all duration-200 ease-out"
+            style={{
+              transform: \`translate3d(0, \${liftY.toFixed(2)}px, 0) scale(\${scale.toFixed(3)})\`,
+              transformOrigin: 'bottom center',
+              willChange: 'transform',
+              transition: mouseX === null ? 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)' : 'transform 40ms linear'
+            }}
+            className="group relative flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white"
           >
             {item.icon}
-            <span className="pointer-events-none absolute -top-9 rounded-md border border-white/15 bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+            <span className="pointer-events-none absolute -top-9 rounded-md border border-white/15 bg-neutral-900 px-2 py-0.5 text-[11px] font-medium text-white opacity-0 transition-opacity duration-100 group-hover:opacity-100">
               {item.label}
             </span>
           </button>
@@ -141,15 +160,14 @@ export function SpatialDock({ items, magnification = 1.45 }: { items: DockItem[]
   );
 }
 `,
-    vanillaCode: `<nav class="spatial-dock">
-  <button class="dock-item" title="Home">&#127968;</button>
-  <button class="dock-item" title="Studio">&#10024;</button>
-  <button class="dock-item" title="Tokens">&#128142;</button>
+    vanillaCode: `<nav class="spatial-dock" onmousemove="const x=event.clientX;this.querySelectorAll('.dock-item').forEach(b=>{const r=b.getBoundingClientRect();const d=Math.abs(x-(r.left+r.width/2));const f=d<115?Math.cos((d/115)*(Math.PI/2)):0;b.style.transition='transform 40ms linear';b.style.transform='translate3d(0,'+(-10*f).toFixed(2)+'px,0) scale('+(1+0.45*f).toFixed(3)+')';})" onmouseleave="this.querySelectorAll('.dock-item').forEach(b=>{b.style.transition='transform 220ms cubic-bezier(.22,1,.36,1)';b.style.transform='none';})">
+  <button class="dock-item" title="Home">01</button>
+  <button class="dock-item" title="Studio">02</button>
+  <button class="dock-item" title="Tokens">03</button>
 </nav>
 <style>
 .spatial-dock { display:inline-flex; gap:12px; padding:12px 18px; border-radius:20px; background:rgba(12,13,18,0.75); backdrop-filter:blur(24px); border:1px solid rgba(255,255,255,0.14); }
-.dock-item { width:44px; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.06); color:#fff; transition:transform .2s cubic-bezier(.16,1,.3,1); cursor:pointer; }
-.dock-item:hover { transform: scale(1.38) translateY(-8px); }
+.dock-item { width:44px; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.06); color:#fff; transform-origin:bottom center; will-change:transform; cursor:pointer; }
 </style>`
   },
   {

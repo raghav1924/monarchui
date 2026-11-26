@@ -6,7 +6,8 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
   const [islandOpen, setIslandOpen] = useState(false);
   const [annual, setAnnual] = useState(true);
   const [splitPos, setSplitPos] = useState(50);
-  const [dockHover, setDockHover] = useState<number | null>(null);
+  const [dockMouseX, setDockMouseX] = useState<number | null>(null);
+  const dockItemRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
   const [mag, setMag] = useState({ x: 0, y: 0 });
   const [spot, setSpot] = useState({ x: 50, y: 50 });
@@ -37,17 +38,42 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
 
     case 'spatial-dock':
       return (
-        <div className="inline-flex items-end gap-2.5 border border-neutral-200 bg-white px-4 py-2.5 dark:border-neutral-800 dark:bg-[#111113]">
+        <div
+          onMouseMove={(e) => setDockMouseX(e.clientX)}
+          onMouseLeave={() => setDockMouseX(null)}
+          className="inline-flex items-end gap-2.5 border border-neutral-200 bg-white px-4 py-2.5 dark:border-neutral-800 dark:bg-[#111113]"
+        >
           {['01', '02', '03', '04', '05'].map((lbl, idx) => {
-            const dist = dockHover === null ? 9 : Math.abs(dockHover - idx);
-            const scale = dist === 0 ? 1.38 : dist === 1 ? 1.16 : 1;
+            let scale = 1;
+            let liftY = 0;
+            const el = dockItemRefs.current[idx];
+            if (dockMouseX !== null && el) {
+              const rect = el.getBoundingClientRect();
+              const center = rect.left + rect.width / 2;
+              const dist = Math.abs(dockMouseX - center);
+              const radius = 110;
+              if (dist < radius) {
+                const factor = Math.cos((dist / radius) * (Math.PI / 2));
+                scale = 1 + 0.45 * factor;
+                liftY = -10 * factor;
+              }
+            }
             return (
               <button
                 key={lbl}
-                onMouseEnter={() => setDockHover(idx)}
-                onMouseLeave={() => setDockHover(null)}
-                style={{ transform: `scale(${scale}) translateY(${dist === 0 ? -6 : 0}px)` }}
-                className="grid h-9 w-9 place-items-center rounded border border-neutral-300 bg-neutral-50 font-mono text-[11px] font-semibold transition-transform duration-150 dark:border-neutral-700 dark:bg-neutral-900"
+                ref={(node) => {
+                  dockItemRefs.current[idx] = node;
+                }}
+                style={{
+                  transform: `translate3d(0, ${liftY.toFixed(2)}px, 0) scale(${scale.toFixed(3)})`,
+                  transformOrigin: 'bottom center',
+                  willChange: 'transform',
+                  transition:
+                    dockMouseX === null
+                      ? 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1)'
+                      : 'transform 40ms linear'
+                }}
+                className="grid h-9 w-9 place-items-center rounded border border-neutral-300 bg-neutral-50 font-mono text-[11px] font-semibold dark:border-neutral-700 dark:bg-neutral-900"
               >
                 {lbl}
               </button>
