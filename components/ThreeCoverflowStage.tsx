@@ -399,7 +399,7 @@ export function ThreeCoverflowStage({
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-    camera.position.set(0, 0.12, 4.4);
+    camera.position.set(0, 0.1, 4.9);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -554,7 +554,7 @@ export function ThreeCoverflowStage({
   return (
     <div
       ref={mountRef}
-      className="h-[370px] w-full cursor-pointer overflow-hidden rounded-xl border border-neutral-200/80 bg-neutral-50/70 select-none sm:h-[430px] dark:border-neutral-800 dark:bg-neutral-950/60"
+      className="h-[270px] w-full cursor-pointer overflow-hidden rounded-xl border border-neutral-200/80 bg-neutral-50/70 select-none sm:h-[310px] dark:border-neutral-800 dark:bg-neutral-950/60"
     />
   );
 }

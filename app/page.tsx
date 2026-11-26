@@ -314,13 +314,13 @@ export default function MonarchHomePage() {
         </div>
       </section>
 
-      {/* 05 // Three.js Spatial Stage (Moved below sections 2-4) */}
-      <section id="stage" className="relative border-b border-neutral-200 px-6 py-12 md:px-10 dark:border-neutral-800">
+      {/* 05 // Three.js Spatial Stage + Live Interactive Preview (Both visible together) */}
+      <section id="stage" className="relative border-b border-neutral-200 px-6 py-8 md:px-10 dark:border-neutral-800">
         <CrosshairCorners />
 
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-3 flex items-center justify-between">
           <span className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
-            05 // THREE.JS_SPATIAL_STAGE · {active.id.toUpperCase()}
+            05 // THREE.JS_SPATIAL_STAGE &amp; LIVE_PREVIEW · {active.id.toUpperCase()}
           </span>
           <span className="rounded-full border border-neutral-200 px-2.5 py-0.5 font-mono text-[11px] text-neutral-500 dark:border-neutral-800">
             {String(activeIdx + 1).padStart(2, '0')} / {String(MONARCH_COMPONENTS.length).padStart(2, '0')}
@@ -339,36 +339,48 @@ export default function MonarchHomePage() {
           }}
         />
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex gap-2">
+        {/* Compact Inline Deck Bar */}
+        <div className="my-3.5 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => stepDeck(-1)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-4 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
+              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
             >
               <kbd className="font-mono text-[10px] text-neutral-400">←</kbd> Prev
             </button>
             <button
               onClick={() => stepDeck(1)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-4 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
+              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
             >
               Next <kbd className="font-mono text-[10px] text-neutral-400">→</kbd>
             </button>
+            <span className="ml-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+              {active.name}
+            </span>
           </div>
-          <span className="font-mono text-[11px] text-neutral-400">
-            SCROLL · CLICK SLAB TO INSPECT · ARROWS
-          </span>
+          <button
+            onClick={() => document.getElementById('registry')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="font-mono text-[11px] text-neutral-500 transition-colors hover:text-neutral-950 dark:hover:text-white"
+          >
+            INSPECT CODE &amp; PROPS ↓
+          </button>
+        </div>
+
+        {/* Live Interactive Preview directly below Carousel (in same viewport) */}
+        <div className="flex min-h-[280px] w-full items-center justify-center rounded-2xl border border-neutral-200/90 bg-neutral-50/70 p-6 sm:min-h-[320px] sm:p-8 dark:border-neutral-800 dark:bg-neutral-900/40">
+          <LiveComponentPreview componentId={active.id} />
         </div>
       </section>
 
-      {/* 06 // Full-Width Live Preview & Component Inspector (Top & Bottom list, large preview) */}
-      <section id="registry" className="relative border-b border-neutral-200 px-6 py-16 md:px-10 dark:border-neutral-800">
+      {/* 06 // Component Selector, Code Inspector & Props */}
+      <section id="registry" className="relative border-b border-neutral-200 px-6 py-14 md:px-10 dark:border-neutral-800">
         <CrosshairCorners />
 
         {/* Section Header */}
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <span className="font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
-              06 // LIVE_STUDIO · {active.category}
+              06 // CODE_INSPECTOR · {active.category}
             </span>
             <h2 className="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">{active.name}</h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
@@ -378,8 +390,8 @@ export default function MonarchHomePage() {
           <span className="font-mono text-xs text-neutral-400">{active.filename}</span>
         </div>
 
-        {/* Top Component Selector Bar */}
-        <div className="mt-8 flex flex-wrap gap-2">
+        {/* Component Selector Bar */}
+        <div className="mt-7 flex flex-wrap gap-2">
           {visibleComponents.map(({ c, idx }) => (
             <button
               key={c.id}
@@ -396,30 +408,6 @@ export default function MonarchHomePage() {
               {c.name}
             </button>
           ))}
-        </div>
-
-        {/* Large Full-Width Interactive Preview Canvas */}
-        <div className="mt-6 flex min-h-[360px] w-full items-center justify-center rounded-2xl border border-neutral-200/90 bg-neutral-50/70 p-8 sm:min-h-[420px] sm:p-12 dark:border-neutral-800 dark:bg-neutral-900/40">
-          <LiveComponentPreview componentId={active.id} />
-        </div>
-
-        {/* Bottom Component Switcher Strip */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-200/80 bg-neutral-50/60 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900/40">
-          <button
-            onClick={() => stepDeck(-1)}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-600 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white"
-          >
-            ← {MONARCH_COMPONENTS[(activeIdx - 1 + MONARCH_COMPONENTS.length) % MONARCH_COMPONENTS.length].name}
-          </button>
-          <span className="font-mono text-[11px] text-neutral-400">
-            {String(activeIdx + 1).padStart(2, '0')} OF {MONARCH_COMPONENTS.length}
-          </span>
-          <button
-            onClick={() => stepDeck(1)}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-600 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white"
-          >
-            {MONARCH_COMPONENTS[(activeIdx + 1) % MONARCH_COMPONENTS.length].name} →
-          </button>
         </div>
 
         {/* Code Inspector */}
