@@ -1,7 +1,7 @@
 {
-  "name": "royal-junction-ui",
+  "name": "renderjet-ui",
   "version": "1.0.0",
-  "description": "Royal Junction (RJ) — Technical Blueprint UI Component Registry & Three.js Spatial Studio built with Next.js, Tailwind CSS, and Three.js",
+  "description": "RenderJet (RJ) — High-speed Spatial UI Component Registry & Three.js Studio built with Next.js, Tailwind CSS, and Three.js",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

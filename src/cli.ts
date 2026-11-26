@@ -19,7 +19,7 @@ function printHelp() {
 \x1b[33m  | |_) |   | | | | | || | \x1b[0m
 \x1b[33m  |  _ < _  | | | |_| || | \x1b[0m
 \x1b[33m  |_| \\_(_) |_|  \\___/|___|\x1b[0m
-\x1b[90m  v${VERSION} | Royal Junction (RJ) Spatial & Bento Component Registry\x1b[0m
+\x1b[90m  v${VERSION} | RenderJet (RJ) Spatial & Bento Component Registry\x1b[0m
 \x1b[90m  Architect: Jatin Sharma (https://jatinsh.netlify.app/)\x1b[0m
 
 \x1b[1mUSAGE:\x1b[0m
@@ -42,7 +42,7 @@ async function main() {
 
   switch (cmd) {
     case 'list': {
-      console.log('\n\x1b[1m=== ROYAL JUNCTION (RJ) REGISTRY (12 COMPONENTS) ===\x1b[0m\n');
+      console.log('\n\x1b[1m=== RENDERJET (RJ) REGISTRY (12 COMPONENTS) ===\x1b[0m\n');
       for (const c of ComponentRegistry.list()) {
         console.log(`  \x1b[33m${c.id.padEnd(20)}\x1b[0m [${c.tier.padEnd(9)}] ${c.name} — ${c.tagline}`);
       }
@@ -50,7 +50,7 @@ async function main() {
       break;
     }
     case 'themes': {
-      console.log('\n\x1b[1m=== ROYAL JUNCTION (RJ) THEME PRESETS ===\x1b[0m\n');
+      console.log('\n\x1b[1m=== RENDERJET (RJ) THEME PRESETS ===\x1b[0m\n');
       for (const t of ThemeEngine.listPresets()) {
         console.log(`  \x1b[33m${t.id.padEnd(18)}\x1b[0m ${t.name} (${t.accentPrimary})`);
       }
@@ -61,7 +61,7 @@ async function main() {
       const tIdx = args.indexOf('--theme');
       const preset = (tIdx !== -1 ? args[tIdx + 1] : 'royal-obsidian') as ThemePresetId;
       const files = ComponentInstaller.initTheme(process.cwd(), preset);
-      console.log(`\x1b[32m✔ Initialized Royal Junction (RJ) tokens (${preset}):\x1b[0m`);
+      console.log(`\x1b[32m✔ Initialized RenderJet (RJ) tokens (${preset}):\x1b[0m`);
       files.forEach((f) => console.log(`  - ${f}`));
       break;
     }
@@ -84,7 +84,7 @@ async function main() {
       const port = pIdx !== -1 && args[pIdx + 1] ? parseInt(args[pIdx + 1], 10) : 7272;
       const studio = new StudioServer(port);
       await studio.start();
-      console.log(`\x1b[33m✔ Royal Junction (RJ) Spatial Studio live at http://localhost:${port}\x1b[0m`);
+      console.log(`\x1b[33m✔ RenderJet (RJ) Spatial Studio live at http://localhost:${port}\x1b[0m`);
       break;
     }
     case 'version':

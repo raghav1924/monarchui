@@ -147,7 +147,7 @@ function createSlabTexture(
       ctx.stroke();
       ctx.fillStyle = strong;
       ctx.font = '700 22px -apple-system, sans-serif';
-      ctx.fillText('ROYAL JUNCTION 3D', -142, -32);
+      ctx.fillText('RENDERJET 3D', -142, -32);
       ctx.fillStyle = muted;
       ctx.font = '500 14px ui-monospace, monospace';
       ctx.fillText('rotateX(12deg) rotateY(-8deg)', -142, 4);
