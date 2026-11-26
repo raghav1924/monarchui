@@ -147,7 +147,7 @@ function createSlabTexture(
       ctx.stroke();
       ctx.fillStyle = strong;
       ctx.font = '700 22px -apple-system, sans-serif';
-      ctx.fillText('MONARCH 3D CARD', -142, -32);
+      ctx.fillText('R·J 3D CARD', -142, -32);
       ctx.fillStyle = muted;
       ctx.font = '500 14px ui-monospace, monospace';
       ctx.fillText('rotateX(12deg) rotateY(-8deg)', -142, 4);
@@ -256,7 +256,7 @@ function createSlabTexture(
       break;
     }
     case 'kinetic-marquee': {
-      ['NEXT.JS', 'TAILWIND', 'THREE.JS', 'MONARCH'].forEach((lbl, li) => {
+      ['NEXT.JS', 'TAILWIND', 'THREE.JS', 'R·J UI'].forEach((lbl, li) => {
         const bx = px + 26 + li * 136;
         drawRoundedRect(ctx, bx, py + 54, 120, 48, 8);
         ctx.fillStyle = bg;
@@ -316,7 +316,7 @@ function createSlabTexture(
       ctx.font = '600 14px ui-monospace, monospace';
       ctx.fillText('RAW', px + 68, py + 130);
       ctx.fillStyle = strong;
-      ctx.fillText('MONARCH', px + 440, py + 130);
+      ctx.fillText('R·J UI', px + 440, py + 130);
       break;
     }
     default: {

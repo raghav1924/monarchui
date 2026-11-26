@@ -14,15 +14,16 @@ const VERSION = '1.0.0';
 
 function printHelp() {
   console.log(`
-\x1b[33m  __  __                        _     _   _ ___ \x1b[0m
-\x1b[33m |  \\/  |___ _ _  __ _ _ _ __ _| |_  | | | |_ _|\x1b[0m
-\x1b[33m | |\\/| / _ \\ ' \\/ _\` | '_/ _| ' \\ | |_| || | \x1b[0m
-\x1b[33m |_|  |_\\___/_||_\\__,_|_| \\__|_||_|  \\___/|___|\x1b[0m
-\x1b[90m  v${VERSION} | Royal Spatial & Bento UI Component Registry\x1b[0m
+\x1b[33m   ____      _   _   _ ___ \x1b[0m
+\x1b[33m  |  _ \\    | | | | | |_ _|\x1b[0m
+\x1b[33m  | |_) |   | | | | | || | \x1b[0m
+\x1b[33m  |  _ < _  | | | |_| || | \x1b[0m
+\x1b[33m  |_| \\_(_) |_|  \\___/|___|\x1b[0m
+\x1b[90m  v${VERSION} | R·J UI Spatial & Bento Component Registry\x1b[0m
 \x1b[90m  Architect: Jatin Sharma (https://jatinsh.netlify.app/)\x1b[0m
 
 \x1b[1mUSAGE:\x1b[0m
-  monarchui <command> [options]
+  rjui <command> [options]
 
 \x1b[1mCOMMANDS:\x1b[0m
   \x1b[33mstudio\x1b[0m [--port 7272]       Launch Interactive Luxury Component Studio
@@ -41,7 +42,7 @@ async function main() {
 
   switch (cmd) {
     case 'list': {
-      console.log('\n\x1b[1m=== MONARCH UI REGISTRY (12 COMPONENTS) ===\x1b[0m\n');
+      console.log('\n\x1b[1m=== R·J UI REGISTRY (12 COMPONENTS) ===\x1b[0m\n');
       for (const c of ComponentRegistry.list()) {
         console.log(`  \x1b[33m${c.id.padEnd(20)}\x1b[0m [${c.tier.padEnd(9)}] ${c.name} — ${c.tagline}`);
       }
@@ -49,7 +50,7 @@ async function main() {
       break;
     }
     case 'themes': {
-      console.log('\n\x1b[1m=== MONARCH UI THEME PRESETS ===\x1b[0m\n');
+      console.log('\n\x1b[1m=== R·J UI THEME PRESETS ===\x1b[0m\n');
       for (const t of ThemeEngine.listPresets()) {
         console.log(`  \x1b[33m${t.id.padEnd(18)}\x1b[0m ${t.name} (${t.accentPrimary})`);
       }
@@ -60,14 +61,14 @@ async function main() {
       const tIdx = args.indexOf('--theme');
       const preset = (tIdx !== -1 ? args[tIdx + 1] : 'royal-obsidian') as ThemePresetId;
       const files = ComponentInstaller.initTheme(process.cwd(), preset);
-      console.log(`\x1b[32m✔ Initialized MonarchUI tokens (${preset}):\x1b[0m`);
+      console.log(`\x1b[32m✔ Initialized R·J UI tokens (${preset}):\x1b[0m`);
       files.forEach((f) => console.log(`  - ${f}`));
       break;
     }
     case 'add': {
       const target = args[1];
       if (!target) {
-        console.error('Error: Specify a component id or "all". Run "monarchui list".');
+        console.error('Error: Specify a component id or "all". Run "rjui list".');
         process.exit(1);
       }
       const fw = args.includes('--vanilla') ? 'vanilla' : 'react';
@@ -83,7 +84,7 @@ async function main() {
       const port = pIdx !== -1 && args[pIdx + 1] ? parseInt(args[pIdx + 1], 10) : 7272;
       const studio = new StudioServer(port);
       await studio.start();
-      console.log(`\x1b[33m✔ MonarchUI Luxury Studio live at http://localhost:${port}\x1b[0m`);
+      console.log(`\x1b[33m✔ R·J UI Spatial Studio live at http://localhost:${port}\x1b[0m`);
       break;
     }
     case 'version':

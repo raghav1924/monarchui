@@ -1,7 +1,11 @@
 <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="128" height="128" rx="28" fill="#0A0A0A" />
   <path
-    d="M24 36L46 53L64 26L82 53L104 36L95 98H78L81 66L64 83L47 66L50 98H33L24 36Z"
+    d="M28 28H56C71 28 80 36 80 49C80 62 71 70 56 70H41V100H28V28ZM41 40V58H56C63 58 67 55 67 49C67 43 63 40 56 40H41Z"
+    fill-rule="evenodd"
+    clip-rule="evenodd"
     fill="#FFFFFF"
   />
+  <path d="M51 64H65L86 100H72L51 64Z" fill="#FFFFFF" />
+  <path d="M88 28H100V76C100 91 91 100 76 100H63V88H75C83 88 88 83 88 75V28Z" fill="#FFFFFF" />
 </svg>

@@ -740,7 +740,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
           >
             <div className="flex h-full items-center justify-end p-5">
               <div className="text-right">
-                <div className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">AFTER // MONARCHUI</div>
+                <div className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">AFTER // R·J UI</div>
                 <div className="mt-1 text-sm font-semibold">1px Wireframe Precision</div>
               </div>
             </div>

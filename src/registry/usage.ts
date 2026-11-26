@@ -1,12 +1,12 @@
 /**
- * MonarchUI Per-Component Usage & Props Implementation Snippets
+ * R·J UI Per-Component Usage & Props Implementation Snippets
  * Author: Jatin Sharma (https://jatinsh.netlify.app/)
  */
 
 import { MonarchComponent } from '../types.js';
 
 const USAGE_MAP: Record<string, string> = {
-  'spotlight-bento': `import { SpotlightBento } from '@/components/monarch/SpotlightBento';
+  'spotlight-bento': `import { SpotlightBento } from '@/components/rjui/SpotlightBento';
 
 export default function FeaturesSection() {
   return (
@@ -29,7 +29,7 @@ export default function FeaturesSection() {
     />
   );
 }`,
-  'spatial-dock': `import { SpatialDock } from '@/components/monarch/SpatialDock';
+  'spatial-dock': `import { SpatialDock } from '@/components/rjui/SpatialDock';
 
 export default function AppDock() {
   return (
@@ -43,17 +43,17 @@ export default function AppDock() {
     />
   );
 }`,
-  'kinetic-card-3d': `import { KineticCard3D } from '@/components/monarch/KineticCard3D';
+  'kinetic-card-3d': `import { KineticCard3D } from '@/components/rjui/KineticCard3D';
 
 export default function ShowcaseCard() {
   return (
     <KineticCard3D maxTiltDeg={12}>
-      <h3 className="text-lg font-semibold text-white">Monarch Black Edition</h3>
+      <h3 className="text-lg font-semibold text-white">R·J Black Edition</h3>
       <p className="mt-2 text-sm text-neutral-400">Move your cursor to tilt in 3D space.</p>
     </KineticCard3D>
   );
 }`,
-  'command-palette': `import { CommandPalette } from '@/components/monarch/CommandPalette';
+  'command-palette': `import { CommandPalette } from '@/components/rjui/CommandPalette';
 
 export default function GlobalSearch() {
   return (
@@ -65,7 +65,7 @@ export default function GlobalSearch() {
     />
   );
 }`,
-  'champagne-button': `import { ChampagneButton } from '@/components/monarch/ChampagneButton';
+  'champagne-button': `import { ChampagneButton } from '@/components/rjui/ChampagneButton';
 
 export default function HeroActions() {
   return (
@@ -76,7 +76,7 @@ export default function HeroActions() {
     />
   );
 }`,
-  'dynamic-island': `import { DynamicIsland } from '@/components/monarch/DynamicIsland';
+  'dynamic-island': `import { DynamicIsland } from '@/components/rjui/DynamicIsland';
 
 export default function StatusHeader() {
   return (
@@ -86,7 +86,7 @@ export default function StatusHeader() {
     />
   );
 }`,
-  'aurora-hero': `import { AuroraHero } from '@/components/monarch/AuroraHero';
+  'aurora-hero': `import { AuroraHero } from '@/components/rjui/AuroraHero';
 
 export default function LandingHero() {
   return (
@@ -96,7 +96,7 @@ export default function LandingHero() {
     />
   );
 }`,
-  'pricing-crown': `import { PricingCrown } from '@/components/monarch/PricingCrown';
+  'pricing-crown': `import { PricingCrown } from '@/components/rjui/PricingCrown';
 
 export default function PricingSection() {
   return (
@@ -106,7 +106,7 @@ export default function PricingSection() {
     />
   );
 }`,
-  'kinetic-marquee': `import { KineticMarquee } from '@/components/monarch/KineticMarquee';
+  'kinetic-marquee': `import { KineticMarquee } from '@/components/rjui/KineticMarquee';
 
 export default function LogoStrip() {
   return (
@@ -115,7 +115,7 @@ export default function LogoStrip() {
     />
   );
 }`,
-  'metric-sparkline': `import { MetricSparkline } from '@/components/monarch/MetricSparkline';
+  'metric-sparkline': `import { MetricSparkline } from '@/components/rjui/MetricSparkline';
 
 export default function RevenueCard() {
   return (
@@ -126,17 +126,17 @@ export default function RevenueCard() {
     />
   );
 }`,
-  'split-compare': `import { SplitCompare } from '@/components/monarch/SplitCompare';
+  'split-compare': `import { SplitCompare } from '@/components/rjui/SplitCompare';
 
 export default function BeforeAfter() {
   return (
     <SplitCompare
       beforeLabel="Standard UI"
-      afterLabel="MonarchUI"
+      afterLabel="R·J UI"
     />
   );
 }`,
-  'founder-wall': `import { FounderWall } from '@/components/monarch/FounderWall';
+  'founder-wall': `import { FounderWall } from '@/components/rjui/FounderWall';
 
 export default function Testimonials() {
   return (
@@ -153,6 +153,6 @@ export default function Testimonials() {
 export function getComponentUsage(comp: MonarchComponent): string {
   return (
     USAGE_MAP[comp.id] ||
-    `import { ${comp.filename.replace('.tsx', '')} } from '@/components/monarch/${comp.filename.replace('.tsx', '')}';`
+    `import { ${comp.filename.replace('.tsx', '')} } from '@/components/rjui/${comp.filename.replace('.tsx', '')}';`
   );
 }

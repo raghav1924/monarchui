@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Monarch UI — Spatial UI Primitives for React',
+  title: 'R·J UI — Spatial UI Primitives for React',
   description:
     'Fluid, physical motion with zero layout shifts. Built for the modern web with Three.js and Tailwind CSS.'
 };

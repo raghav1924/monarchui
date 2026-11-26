@@ -12,13 +12,13 @@ import { ThemeEngine } from './themeEngine.js';
 
 export class ComponentInstaller {
   static initTheme(targetDir: string, preset: ThemePresetId = 'royal-obsidian'): string[] {
-    const outDir = path.resolve(targetDir, 'components/monarch');
+    const outDir = path.resolve(targetDir, 'components/rjui');
     if (!fs.existsSync(outDir)) {
       fs.mkdirSync(outDir, { recursive: true });
     }
 
-    const cssPath = path.join(outDir, 'monarch-tokens.css');
-    const twPath = path.join(outDir, 'monarch.tailwind.ts');
+    const cssPath = path.join(outDir, 'rjui-tokens.css');
+    const twPath = path.join(outDir, 'rjui.tailwind.ts');
 
     fs.writeFileSync(cssPath, ThemeEngine.generateCssVariables(preset), 'utf8');
     fs.writeFileSync(twPath, ThemeEngine.generateTailwindConfig(preset), 'utf8');
@@ -33,10 +33,10 @@ export class ComponentInstaller {
   ): InstallResult {
     const comp = ComponentRegistry.getById(componentId);
     if (!comp) {
-      throw new Error(`Unknown MonarchUI component "${componentId}". Run "monarchui list" to view all 12 components.`);
+      throw new Error(`Unknown R·J UI component "${componentId}". Run "rjui list" to view all 12 components.`);
     }
 
-    const outDir = path.resolve(targetDir, 'components/monarch');
+    const outDir = path.resolve(targetDir, 'components/rjui');
     if (!fs.existsSync(outDir)) {
       fs.mkdirSync(outDir, { recursive: true });
     }

@@ -1,12 +1,12 @@
 {
-  "name": "monarchui",
+  "name": "rjui",
   "version": "1.0.0",
-  "description": "Technical Blueprint UI Component Registry & Three.js Spatial Studio built with Next.js, Tailwind CSS, and Three.js",
+  "description": "R·J UI — Technical Blueprint UI Component Registry & Three.js Spatial Studio built with Next.js, Tailwind CSS, and Three.js",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "monarchui": "bin/monarchui.js"
+    "rjui": "bin/monarchui.js"
   },
   "scripts": {
     "dev": "next dev -p 7272",
