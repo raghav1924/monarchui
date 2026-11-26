@@ -46,7 +46,7 @@ function CrosshairCorners() {
 export default function MonarchHomePage() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [codeMode, setCodeMode] = useState<'usage' | 'react' | 'vanilla'>('usage');
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
@@ -62,6 +62,14 @@ export default function MonarchHomePage() {
     setDarkMode(next);
     document.documentElement.classList.toggle('dark', next);
   };
+
+  useEffect(() => {
+    if(darkMode){
+      document.documentElement.classList.add('dark');
+    }else{
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   const stepDeck = useCallback((delta: number) => {
     setActiveIdx((prev) => (prev + delta + MONARCH_COMPONENTS.length) % MONARCH_COMPONENTS.length);
@@ -109,9 +117,9 @@ export default function MonarchHomePage() {
         : active.vanillaCode;
 
   return (
-    <div className="mx-auto min-h-screen max-w-6xl border-x border-neutral-200/90 bg-white dark:border-neutral-800 dark:bg-[#09090B]">
+    <div className="mx-auto min-h-screen max-w-6xl border-x border-neutral-200/90 bg-[#F7F7F5] dark:border-[#2A2A34] dark:bg-[#15151A]">
       {/* Top Architectural Navbar */}
-      <header className="relative flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 bg-white/85 px-6 py-4 backdrop-blur-sm md:px-10 dark:border-neutral-800 dark:bg-[#09090B]/90">
+      <header className="relative flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 bg-[#F7F7F5]/90 px-6 py-4 backdrop-blur-sm md:px-10 dark:border-[#2A2A34] dark:bg-[#15151A]/90">
         <CrosshairCorners />
 
         <a href="#" className="flex items-center gap-2.5">
@@ -142,7 +150,7 @@ export default function MonarchHomePage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCmdkOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
+            className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-300 dark:hover:border-neutral-600"
           >
             <span>Search</span>
             <kbd className="font-mono text-[10px] text-neutral-400">⌘K</kbd>
@@ -152,7 +160,7 @@ export default function MonarchHomePage() {
             href="https://github.com/raghav1924/monarchui"
             target="_blank"
             rel="noreferrer"
-            className="hidden items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 sm:inline-flex dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-200 dark:hover:border-neutral-600"
+            className="hidden items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 sm:inline-flex dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-200 dark:hover:border-neutral-600"
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -163,7 +171,7 @@ export default function MonarchHomePage() {
           <button
             onClick={toggleDark}
             aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            className="grid h-8 w-8 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-700 transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
+            className="grid h-8 w-8 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-700 transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-300 dark:hover:border-neutral-600"
           >
             {darkMode ? (
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -206,7 +214,7 @@ export default function MonarchHomePage() {
           </button>
           <button
             onClick={() => document.getElementById('registry')?.scrollIntoView({ behavior: 'smooth' })}
-            className="rounded-full border border-neutral-200 bg-white px-5 py-2.5 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
+            className="rounded-full border border-neutral-200 bg-white px-5 py-2.5 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-300 dark:hover:border-neutral-600"
           >
             Explore Studio ↓
           </button>
@@ -217,7 +225,7 @@ export default function MonarchHomePage() {
       <div className="ruler-ticks border-b border-neutral-200 dark:border-neutral-800" />
 
       {/* 02–04 // Interactive Studio Controls (Moved above 3D Stage) */}
-      <section className="relative grid grid-cols-1 divide-y divide-neutral-200 border-b border-neutral-200 bg-neutral-50/40 md:grid-cols-3 md:divide-x md:divide-y-0 dark:divide-neutral-800 dark:border-neutral-800 dark:bg-[#0c0c0e]">
+      <section className="relative grid grid-cols-1 divide-y divide-neutral-200 border-b border-neutral-200 bg-neutral-50/40 md:grid-cols-3 md:divide-x md:divide-y-0 dark:divide-neutral-800 dark:border-neutral-800 dark:bg-[#0E0E12]">
         <CrosshairCorners />
 
         {/* 02 // CATEGORY_FILTER */}
@@ -239,7 +247,7 @@ export default function MonarchHomePage() {
                 className={`rounded-full border px-3 py-1 font-mono text-[10px] uppercase transition-colors ${
                   categoryFilter === cat
                     ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
-                    : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-400'
+                    : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-400'
                 }`}
               >
                 {cat}
@@ -259,7 +267,7 @@ export default function MonarchHomePage() {
               className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] transition-colors ${
                 autoOrbit
                   ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
-                  : 'border-neutral-200 bg-white text-neutral-500 dark:border-neutral-800 dark:bg-[#111113]'
+                  : 'border-neutral-200 bg-white text-neutral-500 dark:border-neutral-800 dark:bg-[#141418]'
               }`}
             >
               {autoOrbit ? 'Orbit: ON' : 'Orbit: OFF'}
@@ -300,13 +308,13 @@ export default function MonarchHomePage() {
                   'copy-css-vars'
                 )
               }
-              className="flex-1 rounded-full border border-neutral-200 bg-white px-3 py-1.5 font-mono text-[11px] transition-colors hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+              className="flex-1 rounded-full border border-neutral-200 bg-white px-3 py-1.5 font-mono text-[11px] transition-colors hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#141418] dark:hover:border-neutral-600"
             >
               {copiedId === 'copy-css-vars' ? 'Copied CSS!' : 'Copy CSS Vars'}
             </button>
             <button
               onClick={() => copyText('npx rjui init', 'copy-init')}
-              className="rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 font-mono text-[11px] transition-colors hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+              className="rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 font-mono text-[11px] transition-colors hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#141418] dark:hover:border-neutral-600"
             >
               {copiedId === 'copy-init' ? 'Copied!' : 'CLI Init'}
             </button>
@@ -344,13 +352,13 @@ export default function MonarchHomePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => stepDeck(-1)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
+              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-300 dark:hover:border-neutral-600"
             >
               <kbd className="font-mono text-[10px] text-neutral-400">←</kbd> Prev
             </button>
             <button
               onClick={() => stepDeck(1)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-300 dark:hover:border-neutral-600"
+              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-300 dark:hover:border-neutral-600"
             >
               Next <kbd className="font-mono text-[10px] text-neutral-400">→</kbd>
             </button>
@@ -367,7 +375,7 @@ export default function MonarchHomePage() {
         </div>
 
         {/* Live Interactive Preview directly below Carousel (in same viewport) */}
-        <div className="flex min-h-[280px] w-full items-center justify-center rounded-2xl border border-neutral-200/90 bg-neutral-50/70 p-6 sm:min-h-[320px] sm:p-8 dark:border-neutral-800 dark:bg-neutral-900/40">
+        <div className="flex min-h-[280px] w-full items-center justify-center rounded-2xl border border-neutral-200/90 bg-white/90 p-6 sm:min-h-[320px] sm:p-8 dark:border-[#2A2A34] dark:bg-[#1B1B22]">
           <LiveComponentPreview componentId={active.id} />
         </div>
       </section>
@@ -399,7 +407,7 @@ export default function MonarchHomePage() {
               className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
                 idx === activeIdx
                   ? 'border-neutral-950 bg-neutral-950 text-white dark:border-white dark:bg-white dark:text-neutral-950'
-                  : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-400 dark:hover:border-neutral-600'
+                  : 'border-neutral-200 bg-[#FAFAF8] text-neutral-600 hover:border-neutral-300 hover:text-neutral-950 dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-400 dark:hover:border-neutral-600'
               }`}
             >
               <span className="mr-1.5 font-mono text-[10px] opacity-60">
@@ -436,13 +444,13 @@ export default function MonarchHomePage() {
 
           <button
             onClick={() => copyText(code, 'src-btn')}
-            className="rounded-full border border-neutral-200 bg-white px-4 py-1.5 font-mono text-[11px] transition-colors hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
+            className="rounded-full border border-neutral-200 bg-white px-4 py-1.5 font-mono text-[11px] transition-colors hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#141418] dark:hover:border-neutral-600"
           >
             {copiedId === 'src-btn' ? 'Copied!' : 'Copy Code'}
           </button>
         </div>
 
-        <pre className="mt-3 max-h-[360px] overflow-x-auto rounded-2xl border border-neutral-200 bg-neutral-50 p-5 font-mono text-xs leading-relaxed dark:border-neutral-800 dark:bg-[#111113]">
+        <pre className="mt-3 max-h-[360px] overflow-x-auto rounded-2xl border border-neutral-200 bg-neutral-50 p-5 font-mono text-xs leading-relaxed dark:border-neutral-800 dark:bg-[#141418]">
           <code>{code}</code>
         </pre>
 
@@ -450,7 +458,7 @@ export default function MonarchHomePage() {
         <div className="mt-8 overflow-x-auto rounded-2xl border border-neutral-200 dark:border-neutral-800">
           <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="border-b border-neutral-200 bg-neutral-50 font-mono text-[10px] tracking-wider text-neutral-500 uppercase dark:border-neutral-800 dark:bg-[#111113]">
+              <tr className="border-b border-neutral-200 bg-neutral-50 font-mono text-[10px] tracking-wider text-neutral-500 uppercase dark:border-neutral-800 dark:bg-[#141418]">
                 <th className="px-4 py-3">Prop</th>
                 <th className="px-4 py-3">Type</th>
                 <th className="px-4 py-3">Default</th>
@@ -614,7 +622,7 @@ export default function MonarchHomePage() {
           onClick={() => setCmdkOpen(false)}
         >
           <div
-            className="w-full max-w-lg overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl dark:border-neutral-800 dark:bg-[#09090B]"
+            className="w-full max-w-lg overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl dark:border-neutral-800 dark:bg-[#0C0C0F]"
             onClick={(e) => e.stopPropagation()}
           >
             <input

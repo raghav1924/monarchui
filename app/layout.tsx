@@ -22,8 +22,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-white text-neutral-950 dark:bg-[#09090B] dark:text-[#FAFAFA] font-sans transition-colors duration-200">
+    <html
+      lang="en"
+      className={`dark ${inter.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body
+        suppressHydrationWarning
+        className="bg-[#F2F2EF] text-neutral-950 dark:bg-[#111115] dark:text-[#F4F4F5] font-sans transition-colors duration-200"
+      >
         {children}
       </body>
     </html>

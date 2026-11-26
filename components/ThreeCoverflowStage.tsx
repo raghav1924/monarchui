@@ -48,11 +48,11 @@ function createSlabTexture(
   const ctx = canvas.getContext('2d')!;
   ctx.scale(2, 2); // 2x Retina crispness (logical 640x440)
 
-  const bg = dark ? '#111113' : '#ffffff';
-  const subBg = dark ? '#18181b' : '#f7f7f8';
-  const border = dark ? '#27272a' : '#e4e4e7';
-  const strong = dark ? '#fafafa' : '#09090b';
-  const muted = dark ? '#a1a1aa' : '#71717a';
+  const bg = dark ? '#18181F' : '#FFFFFF';
+  const subBg = dark ? '#202028' : '#F3F3F0';
+  const border = dark ? '#2E2E38' : '#E2E2DD';
+  const strong = dark ? '#F4F4F5' : '#09090B';
+  const muted = dark ? '#A1A1AA' : '#71717A';
 
   ctx.clearRect(0, 0, 640, 440);
   ctx.save();
@@ -555,7 +555,7 @@ export function ThreeCoverflowStage({
   return (
     <div
       ref={mountRef}
-      className="h-[270px] w-full cursor-pointer overflow-hidden rounded-xl border border-neutral-200/80 bg-neutral-50/70 select-none sm:h-[310px] dark:border-neutral-800 dark:bg-neutral-950/60"
+      className="h-[270px] w-full cursor-pointer overflow-hidden rounded-xl border border-neutral-200/90 bg-[#EFEFEA]/70 select-none sm:h-[310px] dark:border-[#2A2A34] dark:bg-[#111116]"
     />
   );
 }
