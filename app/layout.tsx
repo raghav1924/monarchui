@@ -15,15 +15,15 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MonarchUI — Technical Blueprint UI Registry & Three.js Spatial Studio',
+  title: 'Monarch UI — Spatial UI Primitives for React',
   description:
-    'Zero-dependency React, Next.js, Tailwind CSS & Three.js spatial UI component registry with exposed wireframe geometry.'
+    'Fluid, physical motion with zero layout shifts. Built for the modern web with Three.js and Tailwind CSS.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-[#FAFAFA] text-[#09090B] dark:bg-[#09090B] dark:text-[#FAFAFA] font-sans transition-colors duration-200">
+      <body className="bg-white text-neutral-950 dark:bg-[#09090B] dark:text-[#FAFAFA] font-sans transition-colors duration-200">
         {children}
       </body>
     </html>
