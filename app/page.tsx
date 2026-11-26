@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { LiveComponentPreview } from '@/components/LiveComponentPreview';
 import { ThreeCoverflowStage } from '@/components/ThreeCoverflowStage';
 import { MONARCH_COMPONENTS } from '@/src/registry/components';
 
@@ -152,7 +153,7 @@ export default function MonarchHomePage() {
           </div>
 
           <ThreeCoverflowStage
-            totalItems={MONARCH_COMPONENTS.length}
+            components={MONARCH_COMPONENTS}
             activeIndex={activeIdx}
             darkMode={darkMode}
             onSelectIndex={setActiveIdx}
@@ -283,6 +284,13 @@ export default function MonarchHomePage() {
             >
               {copiedId === 'cli-btn' ? 'Copied!' : `npx monarchui add ${active.id}`}
             </button>
+          </div>
+
+          <div className="mt-5 font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
+            LIVE INTERACTIVE PREVIEW
+          </div>
+          <div className="mt-2 flex min-h-[130px] items-center justify-center border border-neutral-200 bg-neutral-50/50 p-5 dark:border-neutral-800 dark:bg-neutral-900/40">
+            <LiveComponentPreview componentId={active.id} />
           </div>
 
           <div className="mt-5 flex flex-wrap gap-1.5">
