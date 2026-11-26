@@ -4,10 +4,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { LiveComponentPreview } from '@/components/LiveComponentPreview';
 import { ThreeCoverflowStage } from '@/components/ThreeCoverflowStage';
 import { MONARCH_COMPONENTS } from '@/src/registry/components';
+import { getComponentUsage } from '@/src/registry/usage';
 
 export default function MonarchHomePage() {
   const [activeIdx, setActiveIdx] = useState(0);
-  const [codeMode, setCodeMode] = useState<'react' | 'vanilla'>('react');
+  const [codeMode, setCodeMode] = useState<'usage' | 'react' | 'vanilla'>('usage');
   const [darkMode, setDarkMode] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -56,7 +57,12 @@ export default function MonarchHomePage() {
       c.category.toLowerCase().includes(query.toLowerCase())
   );
 
-  const code = codeMode === 'react' ? active.reactCode : active.vanillaCode;
+  const code =
+    codeMode === 'usage'
+      ? getComponentUsage(active)
+      : codeMode === 'react'
+        ? active.reactCode
+        : active.vanillaCode;
 
   return (
     <div className="mx-auto min-h-screen max-w-6xl border-x border-neutral-200 bg-[#FAFAFA] dark:border-neutral-800 dark:bg-[#09090B]">
@@ -301,13 +307,47 @@ export default function MonarchHomePage() {
           </div>
 
           <div className="mt-5 font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
-            LIVE INTERACTIVE PREVIEW
+            01 // QUICK_INSTALL &amp; PACKAGE_SETUP
+          </div>
+          <div className="mt-2 grid grid-cols-1 divide-y divide-neutral-200 border border-neutral-200 sm:grid-cols-2 sm:divide-x sm:divide-y-0 dark:divide-neutral-800 dark:border-neutral-800">
+            <div className="flex items-center justify-between gap-2 bg-white px-3 py-2.5 dark:bg-[#111113]">
+              <code className="truncate font-mono text-xs">npm install monarchui</code>
+              <button
+                onClick={() => copyText('npm install monarchui', 'npm-pkg')}
+                className="shrink-0 rounded border border-neutral-200 px-2 py-1 font-mono text-[10px] hover:border-neutral-400 dark:border-neutral-700"
+              >
+                {copiedId === 'npm-pkg' ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+            <div className="flex items-center justify-between gap-2 bg-white px-3 py-2.5 dark:bg-[#111113]">
+              <code className="truncate font-mono text-xs">npx monarchui add {active.id}</code>
+              <button
+                onClick={() => copyText(`npx monarchui add ${active.id}`, 'cli-add')}
+                className="shrink-0 rounded border border-neutral-200 px-2 py-1 font-mono text-[10px] hover:border-neutral-400 dark:border-neutral-700"
+              >
+                {copiedId === 'cli-add' ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-5 font-mono text-[11px] tracking-widest text-neutral-500 uppercase">
+            02 // LIVE_INTERACTIVE_PREVIEW
           </div>
           <div className="mt-2 flex min-h-[130px] items-center justify-center border border-neutral-200 bg-neutral-50/50 p-5 dark:border-neutral-800 dark:bg-neutral-900/40">
             <LiveComponentPreview componentId={active.id} />
           </div>
 
           <div className="mt-5 flex flex-wrap gap-1.5">
+            <button
+              onClick={() => setCodeMode('usage')}
+              className={`rounded-md border px-3 py-1.5 font-mono text-[11px] ${
+                codeMode === 'usage'
+                  ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-950'
+                  : 'border-neutral-200 bg-white text-neutral-600 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-400'
+              }`}
+            >
+              Usage Example (page.tsx)
+            </button>
             <button
               onClick={() => setCodeMode('react')}
               className={`rounded-md border px-3 py-1.5 font-mono text-[11px] ${
@@ -316,7 +356,7 @@ export default function MonarchHomePage() {
                   : 'border-neutral-200 bg-white text-neutral-600 dark:border-neutral-800 dark:bg-[#111113] dark:text-neutral-400'
               }`}
             >
-              React + Tailwind ({active.filename})
+              Component Source ({active.filename})
             </button>
             <button
               onClick={() => setCodeMode('vanilla')}
@@ -332,7 +372,7 @@ export default function MonarchHomePage() {
               onClick={() => copyText(code, 'src-btn')}
               className="rounded-md border border-neutral-200 bg-white px-3 py-1.5 font-mono text-[11px] hover:border-neutral-400 dark:border-neutral-800 dark:bg-[#111113] dark:hover:border-neutral-600"
             >
-              {copiedId === 'src-btn' ? 'Copied Source!' : 'Copy Source'}
+              {copiedId === 'src-btn' ? 'Copied!' : 'Copy Code'}
             </button>
           </div>
 
