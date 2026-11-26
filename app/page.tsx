@@ -127,9 +127,7 @@ export default function MonarchHomePage() {
         <CrosshairCorners />
 
         <a href="#" className="flex items-center gap-2.5">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-neutral-950 text-white dark:bg-white dark:text-neutral-950">
-            <RJLogo className="h-4 w-4" />
-          </span>
+          <RJLogo className="h-8 w-8 shadow-sm" />
           <span className="text-sm tracking-tight text-neutral-600 dark:text-neutral-300">
             <strong className="font-bold text-neutral-950 dark:text-white">R</strong>ender
             <strong className="font-bold text-neutral-950 dark:text-white">J</strong>et
