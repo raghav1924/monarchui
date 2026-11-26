@@ -157,7 +157,7 @@ export default function MonarchHomePage() {
           </button>
 
           <a
-            href="https://github.com/raghav1924/monarchui"
+            href="https://github.com/raghav1924/renderjet"
             target="_blank"
             rel="noreferrer"
             className="hidden items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:border-neutral-300 sm:inline-flex dark:border-neutral-800 dark:bg-[#141418] dark:text-neutral-200 dark:hover:border-neutral-600"
