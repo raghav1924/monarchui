@@ -10,9 +10,13 @@ const METRIC_SERIES: Record<'7D' | '30D' | '90D', { value: string; delta: string
 
 export function LiveComponentPreview({ componentId }: { componentId: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const cursorElRef = useRef<HTMLDivElement>(null);
+  const cursorCurr = useRef({ x: 160, y: 80 });
+  const cursorTarget = useRef<{ x: number; y: number; visible: boolean }>({ x: 160, y: 80, visible: false });
+
   const [autoDemo, setAutoDemo] = useState(true);
   const [userHovering, setUserHovering] = useState(false);
-  const [cursorPos, setCursorPos] = useState({ x: 50, y: 50, clicking: false, visible: false });
+  const [cursorClicking, setCursorClicking] = useState(false);
 
   const [islandOpen, setIslandOpen] = useState(false);
   const [annual, setAnnual] = useState(true);
@@ -36,7 +40,22 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
 
   const demoActive = autoDemo && !userHovering;
 
-  // rAF Mac-style Dock Physics (shared by manual hover & auto-demo)
+  // Helper: measure exact center of a real DOM element inside containerRef
+  const aimAtTarget = (selector: string) => {
+    const box = containerRef.current;
+    if (!box) return;
+    const el = box.querySelector(selector) as HTMLElement | null;
+    if (!el) return;
+    const br = box.getBoundingClientRect();
+    const er = el.getBoundingClientRect();
+    cursorTarget.current = {
+      x: er.left - br.left + er.width / 2,
+      y: er.top - br.top + er.height / 2,
+      visible: true
+    };
+  };
+
+  // rAF Mac-style Dock Physics
   useEffect(() => {
     if (componentId !== 'spatial-dock') return;
     let rafId = 0;
@@ -70,10 +89,12 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
     return () => cancelAnimationFrame(rafId);
   }, [componentId]);
 
-  // Choreographed Auto-Demo Engine with Virtual Pointer & Live Events
+  // 120fps GPU-composited Auto-Demo Engine (Zero React re-renders for cursor movement)
   useEffect(() => {
     if (!demoActive) {
-      setCursorPos((p) => ({ ...p, visible: false, clicking: false }));
+      cursorTarget.current.visible = false;
+      if (cursorElRef.current) cursorElRef.current.style.opacity = '0';
+      setCursorClicking(false);
       if (!userHovering) dockMouseX.current = null;
       return;
     }
@@ -83,149 +104,217 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
     let stepTimer: ReturnType<typeof setInterval> | null = null;
     let step = 0;
 
-    const triggerClick = () => {
-      setCursorPos((p) => ({ ...p, clicking: true }));
-      setTimeout(() => setCursorPos((p) => ({ ...p, clicking: false })), 240);
+    const box0 = containerRef.current;
+    if (box0) {
+      cursorCurr.current = { x: box0.clientWidth * 0.5, y: box0.clientHeight * 0.5 };
+    }
+
+    const pulseClick = () => {
+      setCursorClicking(true);
+      setTimeout(() => setCursorClicking(false), 240);
     };
 
-    // Discrete event choreography per component
     if (componentId === 'command-palette') {
       const words = ['', 'S', 'Sp', 'Spo', 'Spot', 'Spotlight'];
       stepTimer = setInterval(() => {
-        step = (step + 1) % (words.length + 3);
+        step = (step + 1) % (words.length + 4);
         if (step < words.length) {
+          aimAtTarget('[data-demo-target="cmd-input"]');
           setCmdQuery(words[step]);
-          setCursorPos({ x: 32, y: 24, clicking: false, visible: true });
         } else if (step === words.length) {
-          setCursorPos({ x: 35, y: 58, clicking: true, visible: true });
+          aimAtTarget('[data-demo-target="cmd-row-0"]');
+        } else if (step === words.length + 1) {
+          aimAtTarget('[data-demo-target="cmd-row-0"]');
+          pulseClick();
           setCmdExecuted('01 · Install Spotlight Bento');
-          setTimeout(() => setCursorPos((p) => ({ ...p, clicking: false })), 220);
-        } else if (step === words.length + 2) {
+        } else if (step === words.length + 3) {
           setCmdExecuted(null);
           setCmdQuery('');
         }
-      }, 480);
+      }, 450);
     } else if (componentId === 'dynamic-island') {
+      aimAtTarget('[data-demo-target="island-pill"]');
       stepTimer = setInterval(() => {
-        step++;
-        setCursorPos({ x: 52, y: 54, clicking: false, visible: true });
-        triggerClick();
+        aimAtTarget('[data-demo-target="island-pill"]');
+        pulseClick();
         setIslandOpen((v) => !v);
       }, 1600);
     } else if (componentId === 'pricing-crown') {
       stepTimer = setInterval(() => {
         step = (step + 1) % 4;
-        if (step === 0 || step === 2) {
-          setCursorPos({ x: 74, y: 18, clicking: false, visible: true });
-          triggerClick();
-          setAnnual((v) => !v);
+        if (step === 0) {
+          aimAtTarget('[data-demo-target="pricing-toggle"]');
+          setTimeout(() => {
+            pulseClick();
+            setAnnual((v) => !v);
+          }, 260);
+        } else if (step === 1) {
+          aimAtTarget('[data-demo-target="plan-starter"]');
+          setTimeout(() => {
+            pulseClick();
+            setSelectedPlan('starter');
+          }, 260);
+        } else if (step === 2) {
+          aimAtTarget('[data-demo-target="pricing-toggle"]');
+          setTimeout(() => {
+            pulseClick();
+            setAnnual((v) => !v);
+          }, 260);
         } else {
-          setCursorPos({ x: step === 1 ? 30 : 70, y: 62, clicking: false, visible: true });
-          triggerClick();
-          setSelectedPlan(step === 1 ? 'starter' : 'crown');
+          aimAtTarget('[data-demo-target="plan-crown"]');
+          setTimeout(() => {
+            pulseClick();
+            setSelectedPlan('crown');
+          }, 260);
         }
-      }, 1300);
+      }, 1350);
     } else if (componentId === 'metric-sparkline') {
       const ranges: ('7D' | '30D' | '90D')[] = ['7D', '30D', '90D'];
       stepTimer = setInterval(() => {
         step = (step + 1) % 9;
         if (step % 3 === 0) {
           const rIdx = Math.floor(step / 3) % 3;
-          setMetricRange(ranges[rIdx]);
-          setHoverPoint(null);
-          setCursorPos({ x: 66 + rIdx * 8, y: 22, clicking: false, visible: true });
-          triggerClick();
+          aimAtTarget(`[data-demo-target="range-${ranges[rIdx]}"]`);
+          setTimeout(() => {
+            pulseClick();
+            setMetricRange(ranges[rIdx]);
+            setHoverPoint(null);
+          }, 220);
         } else {
           const ptIdx = (step * 2) % 7;
+          aimAtTarget(`[data-demo-target="metric-pt-${ptIdx}"]`);
           setHoverPoint(ptIdx);
-          setCursorPos({ x: 24 + ptIdx * 9, y: 62, clicking: false, visible: true });
         }
-      }, 750);
+      }, 780);
     } else if (componentId === 'founder-wall') {
       const filters: ('All' | 'Engineering' | 'Design')[] = ['All', 'Engineering', 'Design'];
       stepTimer = setInterval(() => {
         step = (step + 1) % 3;
-        setWallFilter(filters[step]);
-        setCursorPos({ x: 58 + step * 14, y: 18, clicking: false, visible: true });
-        triggerClick();
+        aimAtTarget(`[data-demo-target="wall-${filters[step]}"]`);
+        setTimeout(() => {
+          pulseClick();
+          setWallFilter(filters[step]);
+        }, 220);
       }, 1500);
     } else if (componentId === 'champagne-button') {
       stepTimer = setInterval(() => {
         step = (step + 1) % 4;
         if (step === 1) {
-          setMag({ x: 6, y: -3 });
-          setCursorPos({ x: 46, y: 48, clicking: false, visible: true });
+          aimAtTarget('[data-demo-target="mag-btn"]');
+          setMag({ x: 7, y: -3 });
         } else if (step === 2) {
-          triggerClick();
+          aimAtTarget('[data-demo-target="mag-btn"]');
+          pulseClick();
           setCtaClicked(true);
         } else if (step === 3) {
           setCtaClicked(false);
           setMag({ x: 0, y: 0 });
-          setCursorPos({ x: 62, y: 60, clicking: false, visible: true });
+          const box = containerRef.current;
+          if (box) {
+            cursorTarget.current = { x: box.clientWidth * 0.72, y: box.clientHeight * 0.72, visible: true };
+          }
         }
-      }, 900);
+      }, 950);
     } else if (componentId === 'kinetic-marquee') {
       stepTimer = setInterval(() => {
         step = (step + 1) % 4;
         if (step === 1) {
-          setMarqueePaused(true);
-          setCursorPos({ x: 50, y: 58, clicking: false, visible: true });
+          aimAtTarget('[data-demo-target="marquee-pause"]');
+          setTimeout(() => {
+            pulseClick();
+            setMarqueePaused(true);
+          }, 220);
         } else if (step === 2) {
-          setMarqueePaused(false);
-          setMarqueeFast(true);
-          setCursorPos({ x: 88, y: 18, clicking: false, visible: true });
-          triggerClick();
-        } else if (step === 0) {
-          setMarqueeFast(false);
+          aimAtTarget('[data-demo-target="marquee-pause"]');
+          setTimeout(() => {
+            pulseClick();
+            setMarqueePaused(false);
+          }, 220);
+        } else if (step === 3) {
+          aimAtTarget('[data-demo-target="marquee-speed"]');
+          setTimeout(() => {
+            pulseClick();
+            setMarqueeFast((v) => !v);
+          }, 220);
         }
-      }, 1800);
+      }, 1600);
     }
 
-    // Continuous 60fps cursor paths for spatial/pointer components
-    const animatePath = () => {
-      rafId = requestAnimationFrame(animatePath);
+    const animateLoop = () => {
+      rafId = requestAnimationFrame(animateLoop);
       t += 0.032;
+      const box = containerRef.current;
 
-      if (componentId === 'spotlight-bento') {
-        const px = 50 + Math.sin(t) * 38;
-        const py = 50 + Math.cos(t * 1.4) * 28;
-        setCursorPos({ x: px, y: py, clicking: false, visible: true });
-        const box = containerRef.current;
-        if (box) {
-          setSpot({
-            x: Math.round((px / 100) * box.clientWidth),
-            y: Math.round((py / 100) * box.clientHeight)
-          });
+      if (box) {
+        const bw = box.clientWidth;
+        const bh = box.clientHeight;
+
+        if (componentId === 'spotlight-bento') {
+          const targetEl = box.querySelector('[data-demo-target="bento-box"]') as HTMLElement | null;
+          const tr = targetEl ? targetEl.getBoundingClientRect() : box.getBoundingClientRect();
+          const br = box.getBoundingClientRect();
+          const ox = tr.left - br.left;
+          const oy = tr.top - br.top;
+          const px = ox + tr.width * (0.5 + Math.sin(t) * 0.38);
+          const py = oy + tr.height * (0.5 + Math.cos(t * 1.35) * 0.32);
+          cursorTarget.current = { x: px, y: py, visible: true };
+          setSpot({ x: Math.round(px - ox), y: Math.round(py - oy) });
+        } else if (componentId === 'spatial-dock') {
+          const dockEl = box.querySelector('[data-demo-target="dock-bar"]') as HTMLElement | null;
+          const dr = dockEl ? dockEl.getBoundingClientRect() : box.getBoundingClientRect();
+          const br = box.getBoundingClientRect();
+          const localCenterX = dr.left - br.left + dr.width * (0.5 + Math.sin(t * 0.9) * 0.36);
+          const localY = dr.top - br.top + dr.height * 0.55;
+          cursorTarget.current = { x: localCenterX, y: localY, visible: true };
+          dockMouseX.current = br.left + localCenterX;
+        } else if (componentId === 'kinetic-card-3d') {
+          const cardEl = box.querySelector('[data-demo-target="card-3d"]') as HTMLElement | null;
+          const cr = cardEl ? cardEl.getBoundingClientRect() : box.getBoundingClientRect();
+          const br = box.getBoundingClientRect();
+          const px = cr.left - br.left + cr.width * (0.5 + Math.cos(t) * 0.32);
+          const py = cr.top - br.top + cr.height * (0.5 + Math.sin(t * 1.3) * 0.32);
+          cursorTarget.current = { x: px, y: py, visible: true };
+          setTilt({ rx: Math.sin(t * 1.3) * 14, ry: Math.cos(t) * 16 });
+        } else if (componentId === 'aurora-hero') {
+          const heroEl = box.querySelector('[data-demo-target="aurora-box"]') as HTMLElement | null;
+          const hr = heroEl ? heroEl.getBoundingClientRect() : box.getBoundingClientRect();
+          const br = box.getBoundingClientRect();
+          const pctX = 50 + Math.sin(t * 0.85) * 34;
+          const pctY = 48 + Math.cos(t * 1.2) * 26;
+          cursorTarget.current = {
+            x: hr.left - br.left + (pctX / 100) * hr.width,
+            y: hr.top - br.top + (pctY / 100) * hr.height,
+            visible: true
+          };
+          setAuroraPos({ x: pctX, y: pctY });
+        } else if (componentId === 'split-compare') {
+          const splitEl = box.querySelector('[data-demo-target="split-box"]') as HTMLElement | null;
+          const sr = splitEl ? splitEl.getBoundingClientRect() : box.getBoundingClientRect();
+          const br = box.getBoundingClientRect();
+          const pct = 50 + Math.sin(t * 1.1) * 34;
+          setSplitPos(Math.round(pct));
+          cursorTarget.current = {
+            x: sr.left - br.left + (pct / 100) * sr.width,
+            y: sr.top - br.top + sr.height * 0.5,
+            visible: true
+          };
+        } else if (!cursorTarget.current.visible) {
+          cursorTarget.current = { x: bw * 0.5, y: bh * 0.5, visible: true };
         }
-      } else if (componentId === 'spatial-dock') {
-        const px = 50 + Math.sin(t * 0.9) * 26;
-        setCursorPos({ x: px, y: 58, clicking: false, visible: true });
-        const box = containerRef.current;
-        if (box) {
-          const rect = box.getBoundingClientRect();
-          dockMouseX.current = rect.left + (px / 100) * rect.width;
-        }
-      } else if (componentId === 'kinetic-card-3d') {
-        const px = 50 + Math.cos(t) * 20;
-        const py = 50 + Math.sin(t * 1.3) * 22;
-        setCursorPos({ x: px, y: py, clicking: false, visible: true });
-        setTilt({
-          rx: Math.sin(t * 1.3) * 14,
-          ry: Math.cos(t) * 16
-        });
-      } else if (componentId === 'aurora-hero') {
-        const px = 50 + Math.sin(t * 0.85) * 34;
-        const py = 46 + Math.cos(t * 1.2) * 28;
-        setCursorPos({ x: px, y: py, clicking: false, visible: true });
-        setAuroraPos({ x: px, y: py });
-      } else if (componentId === 'split-compare') {
-        const pos = 50 + Math.sin(t * 1.1) * 32;
-        setSplitPos(Math.round(pos));
-        setCursorPos({ x: 26 + (pos / 100) * 48, y: 54, clicking: false, visible: true });
+      }
+
+      // Smooth 120fps lerp directly to GPU transform (zero CSS transition lag!)
+      const tgt = cursorTarget.current;
+      cursorCurr.current.x += (tgt.x - cursorCurr.current.x) * 0.22;
+      cursorCurr.current.y += (tgt.y - cursorCurr.current.y) * 0.22;
+
+      if (cursorElRef.current) {
+        cursorElRef.current.style.opacity = tgt.visible ? '1' : '0';
+        cursorElRef.current.style.transform = `translate3d(${(cursorCurr.current.x - 4).toFixed(1)}px, ${(cursorCurr.current.y - 3).toFixed(1)}px, 0)`;
       }
     };
 
-    animatePath();
+    animateLoop();
 
     return () => {
       cancelAnimationFrame(rafId);
@@ -238,6 +327,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
       case 'spotlight-bento':
         return (
           <div
+            data-demo-target="bento-box"
             onMouseMove={(e) => {
               const r = e.currentTarget.getBoundingClientRect();
               setSpot({ x: Math.round(e.clientX - r.left), y: Math.round(e.clientY - r.top) });
@@ -266,6 +356,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
         return (
           <div className="flex h-24 items-end justify-center">
             <div
+              data-demo-target="dock-bar"
               onMouseMove={(e) => {
                 dockMouseX.current = e.clientX;
               }}
@@ -294,6 +385,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
         return (
           <div style={{ perspective: '900px' }}>
             <div
+              data-demo-target="card-3d"
               onMouseMove={(e) => {
                 const r = e.currentTarget.getBoundingClientRect();
                 const px = (e.clientX - r.left) / r.width;
@@ -302,7 +394,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
               }}
               onMouseLeave={() => setTilt({ rx: 0, ry: 0 })}
               style={{ transform: `rotateX(${tilt.rx.toFixed(1)}deg) rotateY(${tilt.ry.toFixed(1)}deg)` }}
-              className="w-72 border border-neutral-400 bg-white p-5 transition-transform duration-150 ease-out dark:border-neutral-600 dark:bg-[#111113]"
+              className="w-72 border border-neutral-400 bg-white p-5 transition-transform duration-75 ease-out dark:border-neutral-600 dark:bg-[#111113]"
             >
               <div className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
                 KINETIC_3D_SURFACE
@@ -326,6 +418,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
           <div className="w-full max-w-md border border-neutral-300 bg-white dark:border-neutral-700 dark:bg-[#111113]">
             <div className="flex items-center justify-between border-b border-neutral-200 px-3 py-2 dark:border-neutral-800">
               <input
+                data-demo-target="cmd-input"
                 value={cmdQuery}
                 onChange={(e) => setCmdQuery(e.target.value)}
                 placeholder="Type to filter commands..."
@@ -336,9 +429,10 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
               </kbd>
             </div>
             <div className="divide-y divide-dashed divide-neutral-200 text-xs dark:divide-neutral-800">
-              {cmds.map((c) => (
+              {cmds.map((c, rIdx) => (
                 <button
                   key={c.label}
+                  data-demo-target={`cmd-row-${rIdx}`}
                   onClick={() => {
                     setCmdExecuted(c.label);
                     setTimeout(() => setCmdExecuted(null), 1500);
@@ -363,6 +457,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
         return (
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
+              data-demo-target="mag-btn"
               onMouseMove={(e) => {
                 const r = e.currentTarget.getBoundingClientRect();
                 setMag({
@@ -389,6 +484,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
       case 'dynamic-island':
         return (
           <button
+            data-demo-target="island-pill"
             onClick={() => setIslandOpen((v) => !v)}
             className={`rounded-full border border-neutral-900 bg-neutral-950 text-left text-white transition-all duration-300 dark:border-neutral-600 ${
               islandOpen ? 'w-72 rounded-xl px-4 py-3' : 'w-48 px-4 py-2'
@@ -412,6 +508,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
       case 'aurora-hero':
         return (
           <div
+            data-demo-target="aurora-box"
             onMouseMove={(e) => {
               const r = e.currentTarget.getBoundingClientRect();
               setAuroraPos({
@@ -422,7 +519,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
             className="relative w-full overflow-hidden border border-neutral-200 bg-[#09090B] px-6 py-10 text-center text-white dark:border-neutral-800"
           >
             <div
-              className="pointer-events-none absolute inset-0 opacity-80 transition-all duration-150 ease-out"
+              className="pointer-events-none absolute inset-0 opacity-80"
               style={{
                 backgroundImage: `
                   radial-gradient(280px circle at ${auroraPos.x}% ${auroraPos.y}%, rgba(56, 189, 248, 0.34), transparent 60%),
@@ -470,6 +567,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
                 TIER COMPARISON MATRIX
               </span>
               <button
+                data-demo-target="pricing-toggle"
                 onClick={() => setAnnual((v) => !v)}
                 className="rounded border border-neutral-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold dark:border-neutral-700 dark:bg-[#111113]"
               >
@@ -478,6 +576,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
             </div>
             <div className="grid grid-cols-2 divide-x divide-neutral-200 border border-neutral-200 bg-white dark:divide-neutral-800 dark:border-neutral-800 dark:bg-[#111113]">
               <div
+                data-demo-target="plan-starter"
                 onClick={() => setSelectedPlan('starter')}
                 className={`cursor-pointer p-4 transition-colors ${selectedPlan === 'starter' ? 'bg-neutral-100/80 dark:bg-neutral-900' : ''}`}
               >
@@ -486,6 +585,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
                 <div className="mt-2 text-[11px] text-neutral-500">Core primitives &amp; CSS tokens</div>
               </div>
               <div
+                data-demo-target="plan-crown"
                 onClick={() => setSelectedPlan('crown')}
                 className={`cursor-pointer p-4 transition-colors ${selectedPlan === 'crown' ? 'bg-neutral-100/80 dark:bg-neutral-900' : ''}`}
               >
@@ -513,12 +613,14 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
               </span>
               <div className="flex gap-1.5">
                 <button
+                  data-demo-target="marquee-pause"
                   onClick={() => setMarqueePaused((v) => !v)}
                   className="rounded border border-neutral-200 bg-white px-2 py-0.5 font-mono text-[10px] dark:border-neutral-700 dark:bg-[#111113]"
                 >
                   {marqueePaused ? 'Resume' : 'Pause'}
                 </button>
                 <button
+                  data-demo-target="marquee-speed"
                   onClick={() => setMarqueeFast((v) => !v)}
                   className="rounded border border-neutral-200 bg-white px-2 py-0.5 font-mono text-[10px] dark:border-neutral-700 dark:bg-[#111113]"
                 >
@@ -591,6 +693,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
                 {(['7D', '30D', '90D'] as const).map((r) => (
                   <button
                     key={r}
+                    data-demo-target={`range-${r}`}
                     onClick={() => setMetricRange(r)}
                     className={`rounded border px-2 py-1 font-mono text-[10px] ${
                       metricRange === r
@@ -610,6 +713,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
               {coords.map((pt, idx) => (
                 <circle
                   key={idx}
+                  data-demo-target={`metric-pt-${idx}`}
                   cx={pt.x}
                   cy={pt.y}
                   r={hoverPoint === idx ? 4.5 : 2.5}
@@ -630,7 +734,10 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
 
       case 'split-compare':
         return (
-          <div className="relative h-28 w-full max-w-md select-none overflow-hidden border border-neutral-300 bg-white dark:border-neutral-700 dark:bg-[#111113]">
+          <div
+            data-demo-target="split-box"
+            className="relative h-28 w-full max-w-md select-none overflow-hidden border border-neutral-300 bg-white dark:border-neutral-700 dark:bg-[#111113]"
+          >
             <div className="flex h-full items-center justify-end p-5">
               <div className="text-right">
                 <div className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase">AFTER // MONARCHUI</div>
@@ -674,6 +781,7 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
                 {(['All', 'Engineering', 'Design'] as const).map((f) => (
                   <button
                     key={f}
+                    data-demo-target={`wall-${f}`}
                     onClick={() => setWallFilter(f)}
                     className={`rounded border px-2 py-0.5 font-mono text-[10px] ${
                       wallFilter === f
@@ -720,26 +828,25 @@ export function LiveComponentPreview({ componentId }: { componentId: string }) {
 
       {renderPreviewBody()}
 
-      {/* Virtual Animated Demo Cursor */}
-      {cursorPos.visible && (
-        <div
-          style={{ left: `${cursorPos.x}%`, top: `${cursorPos.y}%` }}
-          className="pointer-events-none absolute z-30 -translate-x-1 -translate-y-1 transition-[left,top] duration-300 ease-out"
-        >
-          {cursorPos.clicking && (
-            <span className="absolute -inset-2 animate-ping rounded-full border border-neutral-900 dark:border-white" />
-          )}
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-neutral-950 dark:text-white">
-            <path
-              d="M4 3L19 10.5L12.5 13L10 19.5L4 3Z"
-              fill="currentColor"
-              stroke={cursorPos.clicking ? '#10b981' : 'currentColor'}
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-      )}
+      {/* GPU-Composited Virtual Animated Cursor (0ms CSS lag) */}
+      <div
+        ref={cursorElRef}
+        style={{ left: 0, top: 0, opacity: 0, willChange: 'transform' }}
+        className="pointer-events-none absolute z-30"
+      >
+        {cursorClicking && (
+          <span className="absolute -inset-2 animate-ping rounded-full border border-neutral-900 dark:border-white" />
+        )}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-neutral-950 dark:text-white">
+          <path
+            d="M4 3L19 10.5L12.5 13L10 19.5L4 3Z"
+            fill="currentColor"
+            stroke={cursorClicking ? '#10b981' : 'currentColor'}
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
     </div>
   );
 }
